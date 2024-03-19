@@ -52,6 +52,34 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         return view
     }()
     
+    private let starIconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "star") // Название изображения из Assets
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    private let phoneIconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "phone") // Название изображения из Assets
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    private let phoneLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        return label
+    }()
+    
+    private let callButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.backgroundColor = .clear
+        button.addTarget(self, action: #selector(callButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6 // TODO: вынести отдельно
@@ -62,6 +90,10 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         view.addSubview(positionLabel)
         view.addSubview(userTagLabel)
         view.addSubview(contentWhiteView)
+        contentWhiteView.addSubview(phoneIconImageView)
+        contentWhiteView.addSubview(starIconImageView)
+        contentWhiteView.addSubview(phoneLabel)
+        contentWhiteView.addSubview(callButton)
         setupConstraints()
     }
     
@@ -101,12 +133,37 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
             make.left.right.bottom.equalToSuperview()
             make.top.equalTo(positionLabel.snp.bottom).offset(24)
         }
+        
+        starIconImageView.snp.makeConstraints { make in
+            make.top.equalTo(contentWhiteView).offset(28)
+            make.left.equalTo(contentWhiteView).offset(18)
+            make.width.height.equalTo(20) // Установите размеры иконки по вашему желанию
+        }
+        
+        phoneIconImageView.snp.makeConstraints { make in
+            make.left.equalTo(starIconImageView)
+            make.top.equalTo(starIconImageView.snp.bottom).offset(48)
+            make.width.height.equalTo(20) // Установите размеры иконки по вашему желанию
+        }
+        
+        phoneLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(phoneIconImageView)
+            make.left.equalTo(phoneIconImageView.snp.right).offset(14)
+        }
+        
+        callButton.snp.makeConstraints { make in
+            make.centerY.equalTo(phoneIconImageView)
+            make.left.right.equalTo(contentWhiteView)
+            make.height.equalTo(60)
+        }
+        
     }
     
     public func configure(with employee: Employee) {
         nameLabel.text = "\(employee.firstName) \(employee.lastName)"
         positionLabel.text = employee.position
         userTagLabel.text = employee.userTag.lowercased()
+        phoneLabel.text = employee.phone
         
         if let url = URL(string: employee.avatarUrl) {
             loadImage(from: url)
@@ -123,5 +180,10 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
             }
         }
         task.resume()
+    }
+    
+    @objc private func callButtonTapped() {
+        // Здесь вызываем метод из презентера для запуска звонка
+        employeeDetailsPresenter.makeCall()
     }
 }
