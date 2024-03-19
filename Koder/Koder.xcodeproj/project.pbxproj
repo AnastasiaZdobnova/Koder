@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2F3FEEEEFBCF13F0E261BC6C /* libPods-Koder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5350EDAAB7DF103992410249 /* libPods-Koder.a */; };
+		542985FD2BA9D85E0025CE7B /* EmployeeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542985FC2BA9D85E0025CE7B /* EmployeeTableViewCell.swift */; };
 		549EF08A2BA978B800C2B77D /* MainScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549EF0892BA978B800C2B77D /* MainScreenViewController.swift */; };
 		549EF08C2BA978D800C2B77D /* MainScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549EF08B2BA978D800C2B77D /* MainScreenModel.swift */; };
 		549EF08E2BA978E700C2B77D /* MainScreenPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549EF08D2BA978E700C2B77D /* MainScreenPresenter.swift */; };
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		5350EDAAB7DF103992410249 /* libPods-Koder.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Koder.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		542985FC2BA9D85E0025CE7B /* EmployeeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeTableViewCell.swift; sourceTree = "<group>"; };
 		549EF0892BA978B800C2B77D /* MainScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewController.swift; sourceTree = "<group>"; };
 		549EF08B2BA978D800C2B77D /* MainScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenModel.swift; sourceTree = "<group>"; };
 		549EF08D2BA978E700C2B77D /* MainScreenPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenPresenter.swift; sourceTree = "<group>"; };
@@ -52,11 +54,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		542985FB2BA9D8010025CE7B /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				54D81FC32BA983AE000300D0 /* DepartmentCell.swift */,
+				542985FC2BA9D85E0025CE7B /* EmployeeTableViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
 		549EF0882BA9788500C2B77D /* MainScreenModule */ = {
 			isa = PBXGroup;
 			children = (
+				542985FB2BA9D8010025CE7B /* Cell */,
 				549EF0892BA978B800C2B77D /* MainScreenViewController.swift */,
-				54D81FC32BA983AE000300D0 /* DepartmentCell.swift */,
 				549EF08B2BA978D800C2B77D /* MainScreenModel.swift */,
 				549EF08D2BA978E700C2B77D /* MainScreenPresenter.swift */,
 			);
@@ -224,6 +235,7 @@
 				54D81FC42BA983AE000300D0 /* DepartmentCell.swift in Sources */,
 				549EF08C2BA978D800C2B77D /* MainScreenModel.swift in Sources */,
 				54F47EE72BA96F6600F7F30E /* AppDelegate.swift in Sources */,
+				542985FD2BA9D85E0025CE7B /* EmployeeTableViewCell.swift in Sources */,
 				54F47EE92BA96F6600F7F30E /* SceneDelegate.swift in Sources */,
 				549EF08E2BA978E700C2B77D /* MainScreenPresenter.swift in Sources */,
 				54D81FC62BA9C323000300D0 /* NetworkService.swift in Sources */,

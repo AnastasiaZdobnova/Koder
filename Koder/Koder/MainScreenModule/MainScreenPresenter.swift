@@ -12,6 +12,8 @@ protocol MainScreenPresenterProtocol: AnyObject {
     var mainScreenModel : MainScreenModelProtocol { get set }
     func getDepartmentNames() -> [String]
     func fetchEmployees()
+    func numberOfEmployees(selectedCategory: String) -> Int
+    func getEmployeesInCategory(atIndex index: Int, category: String) -> Employee
 }
 
 final class MainScreenPresenter: MainScreenPresenterProtocol {
@@ -34,18 +36,24 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     
     func fetchEmployees() {
         mainScreenModel.fetchEmployees { [weak self] result in
-            switch result {
-            case .success(let employees): // здесь employees уже массив Employee
-                // Теперь employees это то, что вы ожидали получить в employeeResponse.items
-                // Обновите интерфейс пользователя, передав список сотрудников
-                //self?.mainViewController?.updateUI(with: employees)
-                print(employees)
-            case .failure(let error):
-                // Показываем ошибку, используя mainViewController
-                //self?.mainViewController?.showError(error)
-                print("error")
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let employees):
+                    self?.mainScreenModel.employees = employees // Обновляем данные в модели
+                    self?.mainViewController?.updateUI(with: employees)
+                case .failure(let error):
+                    // Обработка ошибки, например, показать UIAlert с ошибкой
+                    print("Error fetching employees: \(error)")
+                }
             }
         }
     }
-
+    
+    func numberOfEmployees(selectedCategory: String) -> Int {
+        return mainScreenModel.numberOfEmployees(inCategory: selectedCategory)
+    }
+    
+    func getEmployeesInCategory(atIndex index: Int, category: String) -> Employee {
+        return mainScreenModel.getEmployeesInCategory(inCategory: category)[index]
+    }
 }
