@@ -17,7 +17,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     
     var mainPresenter: MainScreenPresenterProtocol
     private var collectionView: UICollectionView!
-    private var selectedCategory: String?
+    private var selectedCategory = "Все"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,21 +62,26 @@ extension MainScreenViewController: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DepartmentCell", for: indexPath) as! DepartmentCell
-        if indexPath.row == 0 {
-            cell.configure(with: "Все")
-        } else {
-            let departmentNames = Array(mainPresenter.getDepartmentNames())
-            let departmentName = departmentNames[indexPath.row - 1]  // Смещаем индекс на 1, так как добавили ячейку "Все" в начале
-            cell.configure(with: departmentName)
-        }
+        let departmentName = indexPath.row == 0 ? "Все" : Array(mainPresenter.getDepartmentNames())[indexPath.row - 1]
+        cell.configure(with: departmentName, isSelected: departmentName == selectedCategory)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let departmentName = indexPath.row == 0 ? "Все" : Array(mainPresenter.getDepartmentNames())[indexPath.row - 1]
-        let textWidth = departmentName.width(withConstrainedHeight: 36, font: UIFont.systemFont(ofSize: 15))
+        var textWidth = departmentName.width(withConstrainedHeight: 36, font: UIFont.systemFont(ofSize: 15))
+        if(departmentName == selectedCategory){
+            textWidth = departmentName.width(withConstrainedHeight: 36, font: UIFont.systemFont(ofSize: 15, weight: .semibold))
+        }
         let cellWidth = textWidth + 24 // Добавляем 24 пункта для внутренних отступов
         return CGSize(width: cellWidth, height: 36)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let departmentName = indexPath.row == 0 ? "Все" : Array(mainPresenter.getDepartmentNames())[indexPath.row - 1]
+        selectedCategory = departmentName
+        print("selectedCategory - \(departmentName)")
+        collectionView.reloadData() // Перезагрузка для обновления стилей ячеек
     }
 }
 

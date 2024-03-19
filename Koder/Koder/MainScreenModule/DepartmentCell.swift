@@ -12,6 +12,7 @@ import SnapKit
 class DepartmentCell: UICollectionViewCell {
     
     private var nameLabel: UILabel!
+    private var underlineView: UIView!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -33,16 +34,28 @@ class DepartmentCell: UICollectionViewCell {
             make.bottom.equalTo(contentView.snp.bottom).inset(8)
         }
 
-        // Настройте стиль ячейки, например, фон, шрифт и т.д.
+        underlineView = UIView()
+        contentView.addSubview(underlineView)
+        underlineView.backgroundColor = .purple // Или другой цвет для фиолетовой линии
+        underlineView.snp.makeConstraints { make in
+            make.height.equalTo(2)
+            make.left.right.bottom.equalTo(contentView)
+        }
     }
 
-    func configure(with name: String) {
+
+    func configure(with name: String, isSelected: Bool) {
         nameLabel.text = name
-    }
-
-    override var isSelected: Bool {
-        didSet {
-            // Измените стиль ячейки при выборе, например, добавьте фиолетовую полоску и сделайте текст жирным
+        if isSelected == true {
+            underlineView.isHidden = false
+            nameLabel.textColor = .black
+            nameLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        }
+        else{
+            underlineView.isHidden = true
+            nameLabel.textColor = .systemGray2
+            nameLabel.font = UIFont.systemFont(ofSize: 15)
         }
     }
 }
+
