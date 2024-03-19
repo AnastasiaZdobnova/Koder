@@ -23,9 +23,11 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        navigationController?.isNavigationBarHidden = true
         setupCollectionView()
         mainPresenter.fetchEmployees()
         setupTableView()
+        
     }
     
     init(presenter: MainScreenPresenterProtocol) {
@@ -135,7 +137,13 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
         cell.configure(with: employee)
         return cell
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 84 // Здесь вы можете установить желаемую высоту ячейки
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory)
+        mainPresenter.showEmployeeDetailScreen(for: employee)
     }
 }
