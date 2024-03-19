@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		10D0CC94018322E9DBFF2FC6 /* Pods_Koder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67DB3D1DBD0FB162FCBAC593 /* Pods_Koder.framework */; };
+		2F3FEEEEFBCF13F0E261BC6C /* libPods-Koder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5350EDAAB7DF103992410249 /* libPods-Koder.a */; };
 		54F47EE72BA96F6600F7F30E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F47EE62BA96F6600F7F30E /* AppDelegate.swift */; };
 		54F47EE92BA96F6600F7F30E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F47EE82BA96F6600F7F30E /* SceneDelegate.swift */; };
 		54F47EEB2BA96F6600F7F30E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F47EEA2BA96F6600F7F30E /* ViewController.swift */; };
@@ -17,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5350EDAAB7DF103992410249 /* libPods-Koder.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Koder.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		54F47EE32BA96F6600F7F30E /* Koder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Koder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		54F47EE62BA96F6600F7F30E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		54F47EE82BA96F6600F7F30E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -25,7 +26,6 @@
 		54F47EEF2BA96F6800F7F30E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		54F47EF22BA96F6800F7F30E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		54F47EF42BA96F6800F7F30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		67DB3D1DBD0FB162FCBAC593 /* Pods_Koder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Koder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFE9281B51F8CA5B7F21FEA4 /* Pods-Koder.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Koder.release.xcconfig"; path = "Target Support Files/Pods-Koder/Pods-Koder.release.xcconfig"; sourceTree = "<group>"; };
 		F83E47B4ED3367381BD0DD2C /* Pods-Koder.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Koder.debug.xcconfig"; path = "Target Support Files/Pods-Koder/Pods-Koder.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -35,7 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				10D0CC94018322E9DBFF2FC6 /* Pods_Koder.framework in Frameworks */,
+				2F3FEEEEFBCF13F0E261BC6C /* libPods-Koder.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,14 +80,13 @@
 				F83E47B4ED3367381BD0DD2C /* Pods-Koder.debug.xcconfig */,
 				AFE9281B51F8CA5B7F21FEA4 /* Pods-Koder.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
 		CB86C3A621EC16153885FFA9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				67DB3D1DBD0FB162FCBAC593 /* Pods_Koder.framework */,
+				5350EDAAB7DF103992410249 /* libPods-Koder.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -103,7 +102,6 @@
 				54F47EDF2BA96F6600F7F30E /* Sources */,
 				54F47EE02BA96F6600F7F30E /* Frameworks */,
 				54F47EE12BA96F6600F7F30E /* Resources */,
-				62191C755A9EB93FFE2BCC27 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -161,23 +159,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		62191C755A9EB93FFE2BCC27 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Koder/Pods-Koder-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Koder/Pods-Koder-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Koder/Pods-Koder-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		62B043633BA567544D49A1C3 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -367,7 +348,6 @@
 				INFOPLIST_FILE = Koder/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -396,7 +376,6 @@
 				INFOPLIST_FILE = Koder/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
