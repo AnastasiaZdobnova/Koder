@@ -9,6 +9,7 @@ import Foundation
 
 protocol MainScreenModelProtocol: AnyObject {
     var departments: [(String, String)] { get }
+    func fetchEmployees(completion: @escaping (Result<[Employee], Error>) -> Void)
 }
 
 final class MainScreenModel: MainScreenModelProtocol {
@@ -29,4 +30,16 @@ final class MainScreenModel: MainScreenModelProtocol {
         ("support", "Техподдержка"),
         ("analytics", "Аналитика")
     ]
+    
+    func fetchEmployees(completion: @escaping (Result<[Employee], Error>) -> Void) {
+        let networkService = NetworkService()
+        networkService.fetchEmployees { result in
+            switch result {
+            case .success(let employeeResponse):
+                completion(.success(employeeResponse.items))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
 }

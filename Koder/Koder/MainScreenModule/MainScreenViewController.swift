@@ -22,12 +22,14 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        setupCollectionView()
+        mainPresenter.fetchEmployees()
+        
     }
     
     init(presenter: MainScreenPresenterProtocol) {
         self.mainPresenter = presenter
         super.init(nibName: nil, bundle: nil)
-        setupCollectionView()
     }
     
     required init?(coder: NSCoder) {
