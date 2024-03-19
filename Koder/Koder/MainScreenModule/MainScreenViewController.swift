@@ -17,6 +17,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     
     var mainPresenter: MainScreenPresenterProtocol
     private var collectionView: UICollectionView!
+    private var selectedCategory: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,24 +57,26 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
 
 extension MainScreenViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return mainPresenter.getDepartmentNames().count
+        return mainPresenter.getDepartmentNames().count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DepartmentCell", for: indexPath) as! DepartmentCell
-        let departmentName = Array(mainPresenter.getDepartmentNames())[indexPath.row]
-        cell.configure(with: departmentName)
+        if indexPath.row == 0 {
+            cell.configure(with: "Все")
+        } else {
+            let departmentNames = Array(mainPresenter.getDepartmentNames())
+            let departmentName = departmentNames[indexPath.row - 1]  // Смещаем индекс на 1, так как добавили ячейку "Все" в начале
+            cell.configure(with: departmentName)
+        }
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let departments = Array(mainPresenter.getDepartmentNames())
-        print(departments)
-        let departmentName = departments[indexPath.row]
+        let departmentName = indexPath.row == 0 ? "Все" : Array(mainPresenter.getDepartmentNames())[indexPath.row - 1]
         let textWidth = departmentName.width(withConstrainedHeight: 36, font: UIFont.systemFont(ofSize: 15))
-        let cellWidth = textWidth + 24 // Допустим, добавляем 24 пункта для внутренних отступов
-        print("id \(indexPath.row) Width \(cellWidth)")
-        return CGSize(width: cellWidth, height: 36) // Задаем высоту ячейки
+        let cellWidth = textWidth + 24 // Добавляем 24 пункта для внутренних отступов
+        return CGSize(width: cellWidth, height: 36)
     }
 }
 
