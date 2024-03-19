@@ -13,7 +13,7 @@ protocol NetworkServiceProtocol {
 class NetworkService {
     private let baseUrl = URL(string: "https://stoplight.io/mocks/kode-api/trainee-test/331141861/users")!
     private var preferHeaderValue: String = "code=200, example=success"
-
+    
     // Устанавливаем тип ответа, который хотим получить
     func setResponseType(_ type: ResponseType) {
         switch type {

@@ -18,13 +18,14 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     var mainPresenter: MainScreenPresenterProtocol
     private var collectionView: UICollectionView!
     private var selectedCategory = "Все"
+    private var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupCollectionView()
         mainPresenter.fetchEmployees()
-        
+        setupTableView()
     }
     
     init(presenter: MainScreenPresenterProtocol) {
@@ -55,6 +56,24 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             make.height.equalTo(36)
         }
     }
+    
+    private func setupTableView() {
+        tableView = UITableView()
+        tableView.register(EmployeeTableViewCell.self, forCellReuseIdentifier: "EmployeeTableViewCell")
+        tableView.delegate = self
+        tableView.dataSource = self
+        view.addSubview(tableView)
+        
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(collectionView.snp.bottom).offset(16)
+            make.left.right.equalToSuperview().inset(16)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+        }
+    }
+    
+    func updateUI(with employees: [Employee]) {
+        self.tableView.reloadData() // Теперь представление не хранит данные, оно просто обновляет UI
+    }
 }
 
 extension MainScreenViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -84,6 +103,7 @@ extension MainScreenViewController: UICollectionViewDataSource, UICollectionView
         selectedCategory = departmentName
         print("selectedCategory - \(departmentName)")
         collectionView.reloadData() // Перезагрузка для обновления стилей ячеек
+        tableView.reloadData()
     }
 }
 
@@ -95,5 +115,19 @@ extension String {
                                             attributes: [.font: font],
                                             context: nil)
         return ceil(boundingBox.width)
+    }
+}
+
+extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print(mainPresenter.numberOfEmployees(selectedCategory: selectedCategory))
+        return mainPresenter.numberOfEmployees(selectedCategory: selectedCategory)
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "EmployeeTableViewCell", for: indexPath) as! EmployeeTableViewCell
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory) // Аналогично, данные берем из модели через презентер
+        cell.configure(with: employee)
+        return cell
     }
 }
