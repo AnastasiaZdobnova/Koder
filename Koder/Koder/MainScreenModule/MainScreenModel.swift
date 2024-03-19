@@ -61,15 +61,19 @@ final class MainScreenModel: MainScreenModelProtocol {
     }
 
     func getEmployeesInCategory(inCategory category: String) -> [Employee] {
+        var filteredEmployees: [Employee] = []
+        
         if category == "Все" {
-            return employees
+            filteredEmployees = employees
         } else {
             // Найти соответствующий rawValue для категории
             if let departmentRawValue = departments.first(where: { $0.1 == category })?.0 {
-                return employees.filter { $0.department.rawValue == departmentRawValue }
+                filteredEmployees = employees.filter { $0.department.rawValue == departmentRawValue }
             }
         }
-        return []
+        
+        // Отсортировать по имени
+        return filteredEmployees.sorted { $0.firstName.lowercased() < $1.firstName.lowercased() }
     }
 
 }
