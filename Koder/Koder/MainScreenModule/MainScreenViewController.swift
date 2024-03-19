@@ -62,6 +62,11 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         tableView.register(EmployeeTableViewCell.self, forCellReuseIdentifier: "EmployeeTableViewCell")
         tableView.delegate = self
         tableView.dataSource = self
+        // Убираем разделители между ячейками
+        tableView.separatorStyle = .none
+        
+        // Убираем скролл-индикатор
+        tableView.showsVerticalScrollIndicator = false
         view.addSubview(tableView)
         
         tableView.snp.makeConstraints { make in
@@ -131,6 +136,6 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 84 // Здесь вы можете установить желаемую высоту ячейки
+        return 84 // Здесь вы можете установить желаемую высоту ячейки
     }
 }
