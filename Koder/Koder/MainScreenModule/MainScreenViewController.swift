@@ -67,7 +67,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         tableView.snp.makeConstraints { make in
             make.top.equalTo(collectionView.snp.bottom).offset(16)
             make.left.right.equalToSuperview().inset(16)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+            make.bottom.equalTo(view.snp.bottom)
         }
     }
     
@@ -129,5 +129,8 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
         let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory) // Аналогично, данные берем из модели через презентер
         cell.configure(with: employee)
         return cell
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+            return 84 // Здесь вы можете установить желаемую высоту ячейки
     }
 }
