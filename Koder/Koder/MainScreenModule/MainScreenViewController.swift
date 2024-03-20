@@ -162,7 +162,7 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "EmployeeTableViewCell", for: indexPath) as! EmployeeTableViewCell
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory) // Аналогично, данные берем из модели через презентер
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort) // Аналогично, данные берем из модели через презентер
         cell.configure(with: employee)
         return cell
     }
@@ -172,7 +172,19 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory)
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort)
         mainPresenter.showEmployeeDetailScreen(for: employee)
+    }
+}
+
+protocol FilterBottomSheetDelegate: AnyObject {
+    func didSelectSortOption(_ sortOption: String)
+}
+
+extension MainScreenViewController: FilterBottomSheetDelegate {
+    func didSelectSortOption(_ sortOption: String) {
+        selectedSort = sortOption
+        print("Теперь нужно ебануть сортировОчку")
+        tableView.reloadData()
     }
 }

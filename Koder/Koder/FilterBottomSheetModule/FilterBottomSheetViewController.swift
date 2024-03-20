@@ -15,6 +15,8 @@ protocol FilterBottomSheetViewControllerProtocol : UIViewController {
 
 class FilterBottomSheetViewController: UIViewController, FilterBottomSheetViewControllerProtocol {
     
+    weak var delegate: FilterBottomSheetDelegate?
+    
     var selectedSort: String
     
     var filterBottomSheetPresenter: FilterBottomSheetPresenterProtocol
@@ -85,8 +87,10 @@ extension FilterBottomSheetViewController: UITableViewDataSource, UITableViewDel
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedSort = filterBottomSheetPresenter.filterBottomSheetModel.sortOptions[indexPath.row]
         tableView.reloadData()
+        let sortOption = filterBottomSheetPresenter.filterBottomSheetModel.sortOptions[indexPath.row]
+        delegate?.didSelectSortOption(sortOption)
+        dismiss(animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -13,7 +13,7 @@ protocol MainScreenPresenterProtocol: AnyObject {
     func getDepartmentNames() -> [String]
     func fetchEmployees()
     func numberOfEmployees(selectedCategory: String) -> Int
-    func getEmployeesInCategory(atIndex index: Int, category: String) -> Employee
+    func getEmployeesInCategory(atIndex index: Int, category: String, sort: String) -> Employee
     func showEmployeeDetailScreen(for employee: Employee)
     func showFilterBottomSheet(selectedSort: String)
 }
@@ -56,8 +56,8 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
         return mainScreenModel.numberOfEmployees(inCategory: selectedCategory)
     }
     
-    func getEmployeesInCategory(atIndex index: Int, category: String) -> Employee {
-        return mainScreenModel.getEmployeesInCategory(inCategory: category)[index]
+    func getEmployeesInCategory(atIndex index: Int, category: String, sort: String) -> Employee {
+        return mainScreenModel.getEmployeesInCategory(inCategory: category, sort: sort)[index]
     }
     
     func showEmployeeDetailScreen(for employee: Employee) {
@@ -81,7 +81,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
         
         model.filterBottomSheetPresenter = presenter
         presenter.filterBottomSheetController = bottomSheetVC
-        
+        bottomSheetVC.delegate = mainViewController
         bottomSheetVC.modalPresentationStyle = .pageSheet
         bottomSheetVC.modalTransitionStyle = .coverVertical
         mainViewController?.showBottomSheet(bottomSheetVC)

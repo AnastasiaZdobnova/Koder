@@ -12,7 +12,7 @@ protocol MainScreenModelProtocol: AnyObject {
     var employees: [Employee] { get set }
     func fetchEmployees(completion: @escaping (Result<[Employee], Error>) -> Void)
     func numberOfEmployees(inCategory category: String) -> Int
-    func getEmployeesInCategory(inCategory category: String) -> [Employee]
+    func getEmployeesInCategory(inCategory category: String, sort: String) -> [Employee]
 }
 
 final class MainScreenModel: MainScreenModelProtocol {
@@ -60,7 +60,7 @@ final class MainScreenModel: MainScreenModelProtocol {
         return 0
     }
 
-    func getEmployeesInCategory(inCategory category: String) -> [Employee] {
+    func getEmployeesInCategory(inCategory category: String, sort: String) -> [Employee] {
         var filteredEmployees: [Employee] = []
         
         if category == "Все" {
@@ -72,8 +72,20 @@ final class MainScreenModel: MainScreenModelProtocol {
             }
         }
         
-        // Отсортировать по имени
-        return filteredEmployees.sorted { $0.firstName.lowercased() < $1.firstName.lowercased() }
+        if sort == "По алфавиту" {
+            return filteredEmployees.sorted { $0.firstName.lowercased() < $1.firstName.lowercased() }
+        } else {
+            // Сортировка по дню рождения
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MM-dd" // Измените формат, чтобы он включал только месяц и день
+            return filteredEmployees.sorted {
+                guard let birthday1 = dateFormatter.date(from: String($0.birthday.dropFirst(5))),
+                      let birthday2 = dateFormatter.date(from: String($1.birthday.dropFirst(5))) else {
+                    return false
+                }
+                return birthday1 < birthday2
+            }
+        }
     }
 
 }
