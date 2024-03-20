@@ -96,5 +96,4 @@ final class MainScreenModel: MainScreenModelProtocol {
             return sortedByBirthday
         }
     }
-
 }
