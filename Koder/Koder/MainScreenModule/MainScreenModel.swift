@@ -77,14 +77,23 @@ final class MainScreenModel: MainScreenModelProtocol {
         } else {
             // Сортировка по дню рождения
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "MM-dd" // Измените формат, чтобы он включал только месяц и день
-            return filteredEmployees.sorted {
-                guard let birthday1 = dateFormatter.date(from: String($0.birthday.dropFirst(5))),
-                      let birthday2 = dateFormatter.date(from: String($1.birthday.dropFirst(5))) else {
-                    return false
-                }
+            dateFormatter.dateFormat = "MM-dd"
+            let today = Date()
+            let currentMonthDay = dateFormatter.string(from: today)
+
+            let sortedEmployees = filteredEmployees.sorted {
+                let birthday1 = String($0.birthday.dropFirst(5))
+                let birthday2 = String($1.birthday.dropFirst(5))
                 return birthday1 < birthday2
             }
+
+            // Разделение на тех, кто уже отмечал день рождения в этом году, и тех, кто ещё нет
+            let upcomingBirthdays = sortedEmployees.filter { String($0.birthday.dropFirst(5)) >= currentMonthDay }
+            let pastBirthdays = sortedEmployees.filter { String($0.birthday.dropFirst(5)) < currentMonthDay }
+
+            // Объединение двух массивов, так что предстоящие дни рождения идут первыми
+            let sortedByBirthday = upcomingBirthdays + pastBirthdays
+            return sortedByBirthday
         }
     }
 
