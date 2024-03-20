@@ -98,6 +98,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         super.viewDidLoad()
         view.backgroundColor = .systemGray6 // TODO: вынести отдельно
         navigationController?.isNavigationBarHidden = false
+        configureNavigationBar()
         configure(with: employeeDetailsPresenter.getEmployee())
         view.addSubview(avatarImageView)
         view.addSubview(nameLabel)
@@ -213,5 +214,15 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
     @objc private func callButtonTapped() {
         // Здесь вызываем метод из презентера для запуска звонка
         employeeDetailsPresenter.makeCall()
+    }
+    
+    private func configureNavigationBar() {
+        let backButtonImage = UIImage(named: "arrow")?.withRenderingMode(.alwaysOriginal) // Замените "arrow" на название вашего изображения
+        let backButton = UIBarButtonItem(image: backButtonImage, style: .plain, target: self, action: #selector(backButtonTapped))
+        navigationItem.leftBarButtonItem = backButton
+    }
+
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
     }
 }
