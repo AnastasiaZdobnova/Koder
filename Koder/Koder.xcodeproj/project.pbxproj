@@ -12,6 +12,10 @@
 		542985FF2BA9F3470025CE7B /* EmployeeDetailsScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542985FE2BA9F3470025CE7B /* EmployeeDetailsScreenViewController.swift */; };
 		542986012BA9F3570025CE7B /* EmployeeDetailsScreenPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542986002BA9F3570025CE7B /* EmployeeDetailsScreenPresenter.swift */; };
 		542986032BA9F3650025CE7B /* EmployeeDetailsScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542986022BA9F3650025CE7B /* EmployeeDetailsScreenModel.swift */; };
+		542986062BAAD43E0025CE7B /* FilterBottomSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542986052BAAD43E0025CE7B /* FilterBottomSheetViewController.swift */; };
+		542986092BAADC0F0025CE7B /* FilterBottomSheetPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542986082BAADC0F0025CE7B /* FilterBottomSheetPresenter.swift */; };
+		5429860B2BAADC2D0025CE7B /* FilterBottomSheetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5429860A2BAADC2D0025CE7B /* FilterBottomSheetModel.swift */; };
+		5429860D2BAAFE070025CE7B /* SortingOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5429860C2BAAFE070025CE7B /* SortingOptionCell.swift */; };
 		549EF08A2BA978B800C2B77D /* MainScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549EF0892BA978B800C2B77D /* MainScreenViewController.swift */; };
 		549EF08C2BA978D800C2B77D /* MainScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549EF08B2BA978D800C2B77D /* MainScreenModel.swift */; };
 		549EF08E2BA978E700C2B77D /* MainScreenPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549EF08D2BA978E700C2B77D /* MainScreenPresenter.swift */; };
@@ -31,6 +35,10 @@
 		542985FE2BA9F3470025CE7B /* EmployeeDetailsScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeDetailsScreenViewController.swift; sourceTree = "<group>"; };
 		542986002BA9F3570025CE7B /* EmployeeDetailsScreenPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeDetailsScreenPresenter.swift; sourceTree = "<group>"; };
 		542986022BA9F3650025CE7B /* EmployeeDetailsScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeDetailsScreenModel.swift; sourceTree = "<group>"; };
+		542986052BAAD43E0025CE7B /* FilterBottomSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBottomSheetViewController.swift; sourceTree = "<group>"; };
+		542986082BAADC0F0025CE7B /* FilterBottomSheetPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBottomSheetPresenter.swift; sourceTree = "<group>"; };
+		5429860A2BAADC2D0025CE7B /* FilterBottomSheetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBottomSheetModel.swift; sourceTree = "<group>"; };
+		5429860C2BAAFE070025CE7B /* SortingOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortingOptionCell.swift; sourceTree = "<group>"; };
 		549EF0892BA978B800C2B77D /* MainScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewController.swift; sourceTree = "<group>"; };
 		549EF08B2BA978D800C2B77D /* MainScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenModel.swift; sourceTree = "<group>"; };
 		549EF08D2BA978E700C2B77D /* MainScreenPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenPresenter.swift; sourceTree = "<group>"; };
@@ -79,6 +87,17 @@
 			path = EmployeeDetailsScreenModule;
 			sourceTree = "<group>";
 		};
+		542986072BAADB310025CE7B /* FilterBottomSheetModule */ = {
+			isa = PBXGroup;
+			children = (
+				542986052BAAD43E0025CE7B /* FilterBottomSheetViewController.swift */,
+				542986082BAADC0F0025CE7B /* FilterBottomSheetPresenter.swift */,
+				5429860A2BAADC2D0025CE7B /* FilterBottomSheetModel.swift */,
+				5429860C2BAAFE070025CE7B /* SortingOptionCell.swift */,
+			);
+			path = FilterBottomSheetModule;
+			sourceTree = "<group>";
+		};
 		549EF0882BA9788500C2B77D /* MainScreenModule */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +139,7 @@
 		54F47EE52BA96F6600F7F30E /* Koder */ = {
 			isa = PBXGroup;
 			children = (
+				542986072BAADB310025CE7B /* FilterBottomSheetModule */,
 				542986042BA9F4000025CE7B /* EmployeeDetailsScreenModule */,
 				54D81FC72BA9C329000300D0 /* NetworkService */,
 				549EF0882BA9788500C2B77D /* MainScreenModule */,
@@ -248,6 +268,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				549EF08A2BA978B800C2B77D /* MainScreenViewController.swift in Sources */,
+				5429860D2BAAFE070025CE7B /* SortingOptionCell.swift in Sources */,
+				5429860B2BAADC2D0025CE7B /* FilterBottomSheetModel.swift in Sources */,
 				542986012BA9F3570025CE7B /* EmployeeDetailsScreenPresenter.swift in Sources */,
 				54D81FC92BA9C4CA000300D0 /* Employee.swift in Sources */,
 				54D81FC42BA983AE000300D0 /* DepartmentCell.swift in Sources */,
@@ -257,7 +279,9 @@
 				54F47EE92BA96F6600F7F30E /* SceneDelegate.swift in Sources */,
 				542986032BA9F3650025CE7B /* EmployeeDetailsScreenModel.swift in Sources */,
 				549EF08E2BA978E700C2B77D /* MainScreenPresenter.swift in Sources */,
+				542986062BAAD43E0025CE7B /* FilterBottomSheetViewController.swift in Sources */,
 				54D81FC62BA9C323000300D0 /* NetworkService.swift in Sources */,
+				542986092BAADC0F0025CE7B /* FilterBottomSheetPresenter.swift in Sources */,
 				542985FF2BA9F3470025CE7B /* EmployeeDetailsScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

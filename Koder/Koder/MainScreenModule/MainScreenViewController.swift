@@ -18,7 +18,17 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     var mainPresenter: MainScreenPresenterProtocol
     private var collectionView: UICollectionView!
     private var selectedCategory = "Все"
+    private var selectedSort = "По алфавиту"
     private var tableView: UITableView!
+    
+    private lazy var filterButton: UIButton = {
+        let button = UIButton(type: .custom)
+        if let image = UIImage(named: "filter") {
+            button.setImage(image, for: .normal)
+        }
+        button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        return button
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +37,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         setupCollectionView()
         mainPresenter.fetchEmployees()
         setupTableView()
-        
+        setupNavigationBar()
     }
     
     init(presenter: MainScreenPresenterProtocol) {
@@ -37,6 +47,15 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupNavigationBar(){
+        view.addSubview(filterButton)
+        
+        filterButton.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
+            make.right.equalToSuperview().inset(30)
+        }
     }
     
     private func setupCollectionView() {
@@ -81,6 +100,16 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     func updateUI(with employees: [Employee]) {
         self.tableView.reloadData() // Теперь представление не хранит данные, оно просто обновляет UI
     }
+    
+    @objc private func filterButtonTapped() {
+        // Здесь будет логика открытия Bottom Sheet
+        print("Filter button tapped")
+        mainPresenter.showFilterBottomSheet(selectedSort: self.selectedSort)
+    }
+    func showBottomSheet(_ bottomSheet: UIViewController) {
+        self.present(bottomSheet, animated: true)
+    }
+    
 }
 
 extension MainScreenViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {

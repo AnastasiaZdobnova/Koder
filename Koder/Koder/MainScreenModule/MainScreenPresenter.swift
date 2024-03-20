@@ -15,6 +15,7 @@ protocol MainScreenPresenterProtocol: AnyObject {
     func numberOfEmployees(selectedCategory: String) -> Int
     func getEmployeesInCategory(atIndex index: Int, category: String) -> Employee
     func showEmployeeDetailScreen(for employee: Employee)
+    func showFilterBottomSheet(selectedSort: String)
 }
 
 final class MainScreenPresenter: MainScreenPresenterProtocol {
@@ -69,6 +70,20 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
         presenter.employeeDetailsViewController = view
         
         navigationController?.pushViewController(view, animated: true)
+    }
+    
+    func showFilterBottomSheet(selectedSort: String) {
         
+        let model = FilterBottomSheetModel()
+        let presenter = FilterBottomSheetPresenter(model: model)
+        let bottomSheetVC = FilterBottomSheetViewController(presenter: presenter, selectedSort: selectedSort)
+        print("Selected\(selectedSort)")
+        
+        model.filterBottomSheetPresenter = presenter
+        presenter.filterBottomSheetController = bottomSheetVC
+        
+        bottomSheetVC.modalPresentationStyle = .pageSheet
+        bottomSheetVC.modalTransitionStyle = .coverVertical
+        mainViewController?.showBottomSheet(bottomSheetVC)
     }
 }
