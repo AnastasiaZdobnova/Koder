@@ -14,6 +14,7 @@ protocol MainScreenPresenterProtocol: AnyObject {
     func fetchEmployees()
     func numberOfEmployees(selectedCategory: String) -> Int
     func getEmployeesInCategory(atIndex index: Int, category: String) -> Employee
+    func showEmployeeDetailScreen(for employee: Employee)
 }
 
 final class MainScreenPresenter: MainScreenPresenterProtocol {
@@ -21,6 +22,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     var mainScreenModel: MainScreenModelProtocol
     
     weak var mainViewController: MainScreenViewController?
+    weak var navigationController: UINavigationController?
     
     init(model: MainScreenModelProtocol) {
         self.mainScreenModel = model
@@ -55,5 +57,18 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     
     func getEmployeesInCategory(atIndex index: Int, category: String) -> Employee {
         return mainScreenModel.getEmployeesInCategory(inCategory: category)[index]
+    }
+    
+    func showEmployeeDetailScreen(for employee: Employee) {
+        // Создаем экран с детальной информацией о сотруднике
+        let model = EmployeeDetailsScreenModel(employee: employee)
+        let presenter = EmployeeDetailsPresenter(model: model)
+        let view = EmployeeDetailsViewController(presenter: presenter)
+        
+        model.employeeDetailsPresenter = presenter
+        presenter.employeeDetailsViewController = view
+        
+        navigationController?.pushViewController(view, animated: true)
+        
     }
 }
