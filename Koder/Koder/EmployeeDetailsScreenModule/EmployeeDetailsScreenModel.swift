@@ -25,6 +25,7 @@ final class EmployeeDetailsScreenModel: EmployeeDetailsScreenModelProtocol {
     func getEmployee() -> Employee {
         return employee
     }
+    
     func formattedBirthday() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"

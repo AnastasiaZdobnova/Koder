@@ -22,7 +22,6 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 104/2 // Половина высоты и ширины для круглой формы\
-        imageView.clipsToBounds = true
         return imageView
     }()
     
@@ -54,14 +53,14 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
     
     private let starIconImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "star") // Название изображения из Assets
+        imageView.image = UIImage(named: "star")
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
     private let phoneIconImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "phone") // Название изображения из Assets
+        imageView.image = UIImage(named: "phone")
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -72,7 +71,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         return label
     }()
     
-    private let callButton: UIButton = {
+    private lazy var callButton: UIButton = {
         let button = UIButton(type: .custom)
         button.backgroundColor = .clear
         button.addTarget(self, action: #selector(callButtonTapped), for: .touchUpInside)
@@ -85,7 +84,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         label.textColor = .black
         return label
     }()
-
+    
     private let ageLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
@@ -93,13 +92,25 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         return label
     }()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemGray6 // TODO: вынести отдельно
+        view.backgroundColor = .systemGray6
         navigationController?.isNavigationBarHidden = false
         configureNavigationBar()
-        configure(with: employeeDetailsPresenter.getEmployee())
+        configureView(with: employeeDetailsPresenter.getEmployee())
+        setupUI()
+    }
+    
+    init(presenter: EmployeeDetailsScreenPresenterProtocol) {
+        self.employeeDetailsPresenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupUI(){
         view.addSubview(avatarImageView)
         view.addSubview(nameLabel)
         view.addSubview(positionLabel)
@@ -112,15 +123,6 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         contentWhiteView.addSubview(birthdayLabel)
         contentWhiteView.addSubview(ageLabel)
         setupConstraints()
-    }
-    
-    init(presenter: EmployeeDetailsScreenPresenterProtocol) {
-        self.employeeDetailsPresenter = presenter
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     private func setupConstraints() {
@@ -186,7 +188,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         
     }
     
-    public func configure(with employee: Employee) {
+    public func configureView(with employee: Employee) {
         nameLabel.text = "\(employee.firstName) \(employee.lastName)"
         positionLabel.text = employee.position
         userTagLabel.text = employee.userTag.lowercased()
@@ -200,8 +202,6 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
     }
     
     private func loadImage(from url: URL) {
-        // Здесь должна быть ваша логика загрузки изображений,
-        // например, с использованием URLSession или библиотеки для кэширования изображений, такой как SDWebImage
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
             guard let data = data, let image = UIImage(data: data) else { return }
             DispatchQueue.main.async {
@@ -212,7 +212,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
     }
     
     @objc private func callButtonTapped() {
-        // Здесь вызываем метод из презентера для запуска звонка
+
         employeeDetailsPresenter.makeCall()
     }
     
@@ -221,7 +221,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         let backButton = UIBarButtonItem(image: backButtonImage, style: .plain, target: self, action: #selector(backButtonTapped))
         navigationItem.leftBarButtonItem = backButton
     }
-
+    
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
