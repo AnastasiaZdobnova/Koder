@@ -18,7 +18,17 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     var mainPresenter: MainScreenPresenterProtocol
     private var collectionView: UICollectionView!
     private var selectedCategory = "Все"
+    private var selectedSort = "По алфавиту"
     private var tableView: UITableView!
+    
+    private lazy var filterButton: UIButton = {
+        let button = UIButton(type: .custom)
+        if let image = UIImage(named: "filter") {
+            button.setImage(image, for: .normal)
+        }
+        button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        return button
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +37,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         setupCollectionView()
         mainPresenter.fetchEmployees()
         setupTableView()
-        
+        setupNavigationBar()
     }
     
     init(presenter: MainScreenPresenterProtocol) {
@@ -37,6 +47,15 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupNavigationBar(){
+        view.addSubview(filterButton)
+        
+        filterButton.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
+            make.right.equalToSuperview().inset(30)
+        }
     }
     
     private func setupCollectionView() {
@@ -64,10 +83,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         tableView.register(EmployeeTableViewCell.self, forCellReuseIdentifier: "EmployeeTableViewCell")
         tableView.delegate = self
         tableView.dataSource = self
-        // Убираем разделители между ячейками
         tableView.separatorStyle = .none
-        
-        // Убираем скролл-индикатор
         tableView.showsVerticalScrollIndicator = false
         view.addSubview(tableView)
         
@@ -79,7 +95,15 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     }
     
     func updateUI(with employees: [Employee]) {
-        self.tableView.reloadData() // Теперь представление не хранит данные, оно просто обновляет UI
+        self.tableView.reloadData()
+    }
+    
+    @objc private func filterButtonTapped() {
+        print("Filter button tapped")
+        mainPresenter.showFilterBottomSheet(selectedSort: self.selectedSort)
+    }
+    func showBottomSheet(_ bottomSheet: UIViewController) {
+        self.present(bottomSheet, animated: true)
     }
 }
 
@@ -101,7 +125,7 @@ extension MainScreenViewController: UICollectionViewDataSource, UICollectionView
         if(departmentName == selectedCategory){
             textWidth = departmentName.width(withConstrainedHeight: 36, font: UIFont.systemFont(ofSize: 15, weight: .semibold))
         }
-        let cellWidth = textWidth + 24 // Добавляем 24 пункта для внутренних отступов
+        let cellWidth = textWidth + 24
         return CGSize(width: cellWidth, height: 36)
     }
     
@@ -109,7 +133,7 @@ extension MainScreenViewController: UICollectionViewDataSource, UICollectionView
         let departmentName = indexPath.row == 0 ? "Все" : Array(mainPresenter.getDepartmentNames())[indexPath.row - 1]
         selectedCategory = departmentName
         print("selectedCategory - \(departmentName)")
-        collectionView.reloadData() // Перезагрузка для обновления стилей ячеек
+        collectionView.reloadData() 
         tableView.reloadData()
     }
 }
@@ -133,17 +157,28 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "EmployeeTableViewCell", for: indexPath) as! EmployeeTableViewCell
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory) // Аналогично, данные берем из модели через презентер
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort)
         cell.configure(with: employee)
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 84 // Здесь вы можете установить желаемую высоту ячейки
+        return 84
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory)
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort)
         mainPresenter.showEmployeeDetailScreen(for: employee)
+    }
+}
+
+protocol FilterBottomSheetDelegate: AnyObject {
+    func didSelectSortOption(_ sortOption: String)
+}
+
+extension MainScreenViewController: FilterBottomSheetDelegate {
+    func didSelectSortOption(_ sortOption: String) {
+        selectedSort = sortOption
+        tableView.reloadData()
     }
 }

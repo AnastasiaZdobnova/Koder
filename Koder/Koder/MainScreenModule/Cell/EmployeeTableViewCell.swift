@@ -23,7 +23,6 @@ class EmployeeTableViewCell: UITableViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 72/2 // Половина высоты и ширины для круглой формы\
-        imageView.clipsToBounds = true
         return imageView
     }()
     

@@ -12,7 +12,7 @@ protocol MainScreenModelProtocol: AnyObject {
     var employees: [Employee] { get set }
     func fetchEmployees(completion: @escaping (Result<[Employee], Error>) -> Void)
     func numberOfEmployees(inCategory category: String) -> Int
-    func getEmployeesInCategory(inCategory category: String) -> [Employee]
+    func getEmployeesInCategory(inCategory category: String, sort: String) -> [Employee]
 }
 
 final class MainScreenModel: MainScreenModelProtocol {
@@ -60,7 +60,7 @@ final class MainScreenModel: MainScreenModelProtocol {
         return 0
     }
 
-    func getEmployeesInCategory(inCategory category: String) -> [Employee] {
+    func getEmployeesInCategory(inCategory category: String, sort: String) -> [Employee] {
         var filteredEmployees: [Employee] = []
         
         if category == "Все" {
@@ -72,8 +72,28 @@ final class MainScreenModel: MainScreenModelProtocol {
             }
         }
         
-        // Отсортировать по имени
-        return filteredEmployees.sorted { $0.firstName.lowercased() < $1.firstName.lowercased() }
-    }
+        if sort == "По алфавиту" {
+            return filteredEmployees.sorted { $0.firstName.lowercased() < $1.firstName.lowercased() }
+        } else {
+            // Сортировка по дню рождения
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MM-dd"
+            let today = Date()
+            let currentMonthDay = dateFormatter.string(from: today)
 
+            let sortedEmployees = filteredEmployees.sorted {
+                let birthday1 = String($0.birthday.dropFirst(5))
+                let birthday2 = String($1.birthday.dropFirst(5))
+                return birthday1 < birthday2
+            }
+
+            // Разделение на тех, кто уже отмечал день рождения в этом году, и тех, кто ещё нет
+            let upcomingBirthdays = sortedEmployees.filter { String($0.birthday.dropFirst(5)) >= currentMonthDay }
+            let pastBirthdays = sortedEmployees.filter { String($0.birthday.dropFirst(5)) < currentMonthDay }
+
+            // Объединение двух массивов, так что предстоящие дни рождения идут первыми
+            let sortedByBirthday = upcomingBirthdays + pastBirthdays
+            return sortedByBirthday
+        }
+    }
 }
