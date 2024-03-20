@@ -79,12 +79,26 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         return button
     }()
     
+    private let birthdayLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .black
+        return label
+    }()
+
+    private let ageLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .lightGray
+        return label
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6 // TODO: вынести отдельно
         navigationController?.isNavigationBarHidden = false
-        configure(with: employeeDetailsPresenter.employeeDetailsScreenModel.employee)
+        configure(with: employeeDetailsPresenter.getEmployee())
         view.addSubview(avatarImageView)
         view.addSubview(nameLabel)
         view.addSubview(positionLabel)
@@ -94,6 +108,8 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         contentWhiteView.addSubview(starIconImageView)
         contentWhiteView.addSubview(phoneLabel)
         contentWhiteView.addSubview(callButton)
+        contentWhiteView.addSubview(birthdayLabel)
+        contentWhiteView.addSubview(ageLabel)
         setupConstraints()
     }
     
@@ -140,6 +156,16 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
             make.width.height.equalTo(20) // Установите размеры иконки по вашему желанию
         }
         
+        birthdayLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(starIconImageView)
+            make.left.equalTo(starIconImageView.snp.right).offset(14)
+        }
+        
+        ageLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(birthdayLabel)
+            make.right.equalTo(contentWhiteView).inset(20)
+        }
+        
         phoneIconImageView.snp.makeConstraints { make in
             make.left.equalTo(starIconImageView)
             make.top.equalTo(starIconImageView.snp.bottom).offset(48)
@@ -164,6 +190,8 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         positionLabel.text = employee.position
         userTagLabel.text = employee.userTag.lowercased()
         phoneLabel.text = employee.phone
+        birthdayLabel.text = employeeDetailsPresenter.formattedBirthday()
+        ageLabel.text = employeeDetailsPresenter.ageDescription()
         
         if let url = URL(string: employee.avatarUrl) {
             loadImage(from: url)

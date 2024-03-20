@@ -11,6 +11,9 @@ import UIKit
 protocol EmployeeDetailsScreenPresenterProtocol: AnyObject {
     var employeeDetailsScreenModel : EmployeeDetailsScreenModelProtocol { get set }
     func makeCall()
+    func getEmployee() -> Employee
+    func formattedBirthday() -> String
+    func ageDescription() -> String
 }
 
 final class EmployeeDetailsPresenter: EmployeeDetailsScreenPresenterProtocol {
@@ -31,5 +34,17 @@ final class EmployeeDetailsPresenter: EmployeeDetailsScreenPresenterProtocol {
         if let url = URL(string: "tel://\(employeeDetailsScreenModel.employee.phone)") {
             UIApplication.shared.open(url)
         }
+    }
+    
+    func getEmployee() -> Employee {
+        return employeeDetailsScreenModel.getEmployee()
+    }
+    
+    func formattedBirthday() -> String {
+        return employeeDetailsScreenModel.formattedBirthday()
+    }
+    
+    func ageDescription() -> String {
+        return employeeDetailsScreenModel.ageDescription()
     }
 }
