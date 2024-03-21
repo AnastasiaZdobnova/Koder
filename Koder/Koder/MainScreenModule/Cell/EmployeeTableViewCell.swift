@@ -32,6 +32,12 @@ class EmployeeTableViewCell: UITableViewCell {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        return label
+    }()
+    
+    private let nameLabelSkeleton: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.isSkeletonable = true
         label.skeletonTextNumberOfLines = 1
         label.skeletonTextLineHeight = .fixed(16)
@@ -65,6 +71,7 @@ class EmployeeTableViewCell: UITableViewCell {
         contentView.addSubview(nameLabel)
         contentView.addSubview(positionLabel)
         contentView.addSubview(userTagLabel)
+        contentView.addSubview(nameLabelSkeleton)
         setupConstraints()
     }
     
@@ -87,6 +94,10 @@ class EmployeeTableViewCell: UITableViewCell {
         nameLabel.snp.makeConstraints { make in
             make.top.equalTo(contentWhiteView).offset(22)
             make.left.equalTo(avatarImageView.snp.right).offset(16)
+        }
+        
+        nameLabelSkeleton.snp.makeConstraints { make in
+            make.edges.equalTo(nameLabel)
             make.width.equalTo(144)
         }
         
@@ -95,19 +106,16 @@ class EmployeeTableViewCell: UITableViewCell {
             make.left.equalTo(nameLabel.snp.left)
             make.width.equalTo(80)
         }
+        
+        userTagLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(nameLabel)
+            make.left.equalTo(nameLabel.snp.right).offset(4)
+        }
     }
     
     public func configure(with employee: Employee?) {
         if let employee = employee {
-            nameLabel.snp.removeConstraints()
-            nameLabel.snp.makeConstraints { make in
-                make.top.equalTo(contentWhiteView).offset(22)
-                make.left.equalTo(avatarImageView.snp.right).offset(16)
-            }
-            userTagLabel.snp.makeConstraints { make in
-                make.bottom.equalTo(nameLabel)
-                make.left.equalTo(nameLabel.snp.right).offset(4)
-            }
+            
             nameLabel.text = "\(employee.firstName) \(employee.lastName)"
             positionLabel.text = employee.position
             userTagLabel.text = employee.userTag.lowercased()
@@ -117,15 +125,15 @@ class EmployeeTableViewCell: UITableViewCell {
             }
         }
         else{
+            
             nameLabel.text = nil
             positionLabel.text = nil
             userTagLabel.text = nil
             avatarImageView.image = nil
         }
     }
+    
     private func loadImage(from url: URL) {
-        // Здесь должна быть ваша логика загрузки изображений,
-        // например, с использованием URLSession или библиотеки для кэширования изображений, такой как SDWebImage
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
             guard let data = data, let image = UIImage(data: data) else { return }
             DispatchQueue.main.async {
