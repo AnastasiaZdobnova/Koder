@@ -92,10 +92,14 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         return label
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = false
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
-        navigationController?.isNavigationBarHidden = false
         configureNavigationBar()
         configureView(with: employeeDetailsPresenter.getEmployee())
         setupUI()
@@ -217,7 +221,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
     }
     
     private func configureNavigationBar() {
-        let backButtonImage = UIImage(named: "arrow")?.withRenderingMode(.alwaysOriginal) // Замените "arrow" на название вашего изображения
+        let backButtonImage = UIImage(named: "arrow")?.withRenderingMode(.alwaysOriginal)
         let backButton = UIBarButtonItem(image: backButtonImage, style: .plain, target: self, action: #selector(backButtonTapped))
         navigationItem.leftBarButtonItem = backButton
     }

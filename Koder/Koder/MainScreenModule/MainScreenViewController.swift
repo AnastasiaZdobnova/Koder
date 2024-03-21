@@ -19,7 +19,27 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     private var collectionView: UICollectionView!
     private var selectedCategory = "Все"
     private var selectedSort = "По алфавиту"
+    private var selectSearch = ""
     private var tableView: UITableView!
+    private var grayViewRightConstraint: Constraint?
+    private var isDataLoaded = false
+    
+    private let grayView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGray6 // Установка фона в серый цвет
+        view.layer.cornerRadius = 16 // Установка радиуса углов
+        view.clipsToBounds = true // Обрезка по границе радиуса углов
+        return view
+    }()
+    
+    private let findTextField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "Введи имя, тег..."
+        textField.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        textField.textColor = .black
+        textField.backgroundColor = .clear
+        return textField
+    }()
     
     private lazy var filterButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -27,17 +47,57 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             button.setImage(image, for: .normal)
         }
         button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        button.isHidden = false
         return button
     }()
+    
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("Отмена", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        button.setTitleColor(.purple, for: .normal)
+        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+    
+    private lazy var xButton: UIButton = {
+        let button = UIButton(type: .custom)
+        if let image = UIImage(named: "x") {
+            button.setImage(image, for: .normal)
+        }
+        button.addTarget(self, action: #selector(xButtonTapped), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+    
+    private let notFindImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "notFind")
+        imageView.contentMode = .scaleAspectFit
+        imageView.isHidden = true
+        return imageView
+    }()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        navigationController?.isNavigationBarHidden = true
         setupCollectionView()
         mainPresenter.fetchEmployees()
         setupTableView()
         setupNavigationBar()
+        findTextField.delegate = self
+        
+        view.addSubview(notFindImageView)
+        notFindImageView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(176)
+            make.left.right.equalToSuperview().inset(16)
+        }
     }
     
     init(presenter: MainScreenPresenterProtocol) {
@@ -50,11 +110,33 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     }
     
     private func setupNavigationBar(){
+        view.addSubview(grayView)
         view.addSubview(filterButton)
+        view.addSubview(findTextField)
+        view.addSubview(cancelButton)
+        
+        grayView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(6)
+            make.left.equalToSuperview().inset(16)
+            self.grayViewRightConstraint = make.right.equalToSuperview().inset(16).constraint
+            make.height.equalTo(40)
+        }
         
         filterButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
+            make.centerY.equalTo(grayView)
             make.right.equalToSuperview().inset(30)
+        }
+        
+        findTextField.snp.makeConstraints { make in
+            make.centerY.equalTo(grayView)
+            make.height.equalTo(24)
+            make.left.equalToSuperview().offset(28)
+            make.width.equalTo(204)
+        }
+        
+        cancelButton.snp.makeConstraints { make in
+            make.right.equalToSuperview().inset(28)
+            make.centerY.equalTo(grayView)
         }
     }
     
@@ -95,13 +177,47 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     }
     
     func updateUI(with employees: [Employee]) {
+        self.isDataLoaded = true
         self.tableView.reloadData()
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        print("textFieldDidBeginEditing")
+        filterButton.isHidden = true
+        cancelButton.isHidden = false
+        
+        grayViewRightConstraint?.update(inset: 94)
+        view.addSubview(xButton)
+        xButton.isHidden = false
+        
+        xButton.snp.makeConstraints { make in
+            make.centerY.equalTo(grayView)
+            make.right.equalTo(grayView).inset(13)
+        }
+    }
+
+    @objc private func xButtonTapped() {
+        findTextField.text = ""
+        selectSearch = ""
+        tableView.reloadData()
+    }
+    
+    @objc private func cancelButtonTapped() {
+        findTextField.text = ""
+        selectSearch = ""
+        tableView.reloadData()
+        findTextField.resignFirstResponder() // Скрывает клавиатуру
+        filterButton.isHidden = false
+        cancelButton.isHidden = true
+        xButton.isHidden = true
+        grayViewRightConstraint?.update(inset: 16)
     }
     
     @objc private func filterButtonTapped() {
         print("Filter button tapped")
         mainPresenter.showFilterBottomSheet(selectedSort: self.selectedSort)
     }
+    
     func showBottomSheet(_ bottomSheet: UIViewController) {
         self.present(bottomSheet, animated: true)
     }
@@ -133,7 +249,8 @@ extension MainScreenViewController: UICollectionViewDataSource, UICollectionView
         let departmentName = indexPath.row == 0 ? "Все" : Array(mainPresenter.getDepartmentNames())[indexPath.row - 1]
         selectedCategory = departmentName
         print("selectedCategory - \(departmentName)")
-        collectionView.reloadData() 
+        collectionView.reloadData()
+        print("selected search : \(selectSearch)")
         tableView.reloadData()
     }
 }
@@ -151,13 +268,14 @@ extension String {
 
 extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(mainPresenter.numberOfEmployees(selectedCategory: selectedCategory))
-        return mainPresenter.numberOfEmployees(selectedCategory: selectedCategory)
+        let numberOfEmployees = mainPresenter.numberOfEmployees(selectedCategory: selectedCategory, search: selectSearch)
+        notFindImageView.isHidden = !(numberOfEmployees == 0 && isDataLoaded)
+        return numberOfEmployees
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "EmployeeTableViewCell", for: indexPath) as! EmployeeTableViewCell
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort)
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch)
         cell.configure(with: employee)
         return cell
     }
@@ -167,7 +285,7 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort)
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch)
         mainPresenter.showEmployeeDetailScreen(for: employee)
     }
 }
@@ -180,5 +298,16 @@ extension MainScreenViewController: FilterBottomSheetDelegate {
     func didSelectSortOption(_ sortOption: String) {
         selectedSort = sortOption
         tableView.reloadData()
+    }
+}
+
+extension MainScreenViewController: UITextFieldDelegate{
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let currentText = textField.text, let textRange = Range(range, in: currentText) {
+            let updatedText = currentText.replacingCharacters(in: textRange, with: string)
+            self.selectSearch = updatedText
+            tableView.reloadData()
+        }
+        return true
     }
 }
