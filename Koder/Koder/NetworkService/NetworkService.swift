@@ -10,6 +10,7 @@ import Foundation
 class NetworkService {
     private let baseUrl = URL(string: "https://stoplight.io/mocks/kode-api/trainee-test/331141861/users")!
     private var preferHeaderValue: String = "code=200, example=success"
+    private var requestDelay: TimeInterval = 2
 
     func setResponseType(_ type: ResponseType) {
         switch type {
@@ -27,7 +28,7 @@ class NetworkService {
         request.setValue(preferHeaderValue, forHTTPHeaderField: "Prefer")
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { // Задержка в 3 секунды
+            DispatchQueue.main.asyncAfter(deadline: .now() + self.requestDelay) {
                 if let error = error {
                     completion(.failure(error))
                     return

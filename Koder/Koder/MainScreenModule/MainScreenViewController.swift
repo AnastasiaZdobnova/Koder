@@ -24,6 +24,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     private var tableView: UITableView!
     private var grayViewRightConstraint: Constraint?
     private var isDataLoaded = false
+    private var requestDelay: TimeInterval = 1
     
     private let grayView: UIView = {
         let view = UIView()
@@ -233,7 +234,6 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     }
     
     @objc private func refreshEmployeeData() {
-        showSkeleton()
         mainPresenter.fetchEmployees()
     }
     
@@ -321,7 +321,11 @@ protocol FilterBottomSheetDelegate: AnyObject {
 extension MainScreenViewController: FilterBottomSheetDelegate {
     func didSelectSortOption(_ sortOption: String) {
         selectedSort = sortOption
-        tableView.reloadData()
+        showSkeleton()
+        DispatchQueue.main.asyncAfter(deadline: .now() + self.requestDelay){
+            self.tableView.reloadData()
+            self.tableView.hideSkeleton()
+        }
     }
 }
 

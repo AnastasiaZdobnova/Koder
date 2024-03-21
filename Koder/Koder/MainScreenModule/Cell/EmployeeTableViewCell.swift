@@ -12,6 +12,7 @@ import SkeletonView
 class EmployeeTableViewCell: UITableViewCell {
     
     static let identifier = "EmployeeTableViewCell"
+    private var nameLabelRightConstraint: Constraint?
     
     private let contentWhiteView: UIView = {
         let view = UIView()
@@ -94,15 +95,19 @@ class EmployeeTableViewCell: UITableViewCell {
             make.left.equalTo(nameLabel.snp.left)
             make.width.equalTo(80)
         }
-        
-        userTagLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(nameLabel)
-            make.left.equalTo(nameLabel.snp.right).offset(4)
-        }
     }
     
     public func configure(with employee: Employee?) {
         if let employee = employee {
+            nameLabel.snp.removeConstraints()
+            nameLabel.snp.makeConstraints { make in
+                make.top.equalTo(contentWhiteView).offset(22)
+                make.left.equalTo(avatarImageView.snp.right).offset(16)
+            }
+            userTagLabel.snp.makeConstraints { make in
+                make.bottom.equalTo(nameLabel)
+                make.left.equalTo(nameLabel.snp.right).offset(4)
+            }
             nameLabel.text = "\(employee.firstName) \(employee.lastName)"
             positionLabel.text = employee.position
             userTagLabel.text = employee.userTag.lowercased()

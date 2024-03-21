@@ -21,6 +21,7 @@ protocol MainScreenPresenterProtocol: AnyObject {
 final class MainScreenPresenter: MainScreenPresenterProtocol {
     
     var mainScreenModel: MainScreenModelProtocol
+    private let requestDelay: TimeInterval = 1
     
     weak var mainViewController: MainScreenViewController?
     weak var navigationController: UINavigationController?
