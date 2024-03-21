@@ -167,6 +167,11 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshEmployeeData), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+
         view.addSubview(tableView)
         
         tableView.snp.makeConstraints { make in
@@ -179,6 +184,11 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     func updateUI(with employees: [Employee]) {
         self.isDataLoaded = true
         self.tableView.reloadData()
+        endRefreshing()
+    }
+    
+    func endRefreshing(){
+        tableView.refreshControl?.endRefreshing()
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -216,6 +226,10 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     @objc private func filterButtonTapped() {
         print("Filter button tapped")
         mainPresenter.showFilterBottomSheet(selectedSort: self.selectedSort)
+    }
+    
+    @objc private func refreshEmployeeData() {
+        mainPresenter.fetchEmployees()
     }
     
     func showBottomSheet(_ bottomSheet: UIViewController) {
