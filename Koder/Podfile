@@ -4,5 +4,5 @@
 target 'Koder' do
 
 	pod 'SnapKit'
-
+  pod 'SkeletonView'
 end

@@ -7,10 +7,12 @@
 
 import Foundation
 import SnapKit
+import SkeletonView
 
 class EmployeeTableViewCell: UITableViewCell {
     
     static let identifier = "EmployeeTableViewCell"
+    private var nameLabelRightConstraint: Constraint?
     
     private let contentWhiteView: UIView = {
         let view = UIView()
@@ -23,6 +25,7 @@ class EmployeeTableViewCell: UITableViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 72/2 // Половина высоты и ширины для круглой формы\
+        imageView.isSkeletonable = true
         return imageView
     }()
     
@@ -32,10 +35,24 @@ class EmployeeTableViewCell: UITableViewCell {
         return label
     }()
     
+    private let nameLabelSkeleton: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.isSkeletonable = true
+        label.skeletonTextNumberOfLines = 1
+        label.skeletonTextLineHeight = .fixed(16)
+        label.linesCornerRadius = 8
+        return label
+    }()
+    
     private let positionLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.textColor = .darkGray
+        label.isSkeletonable = true
+        label.skeletonTextNumberOfLines = 1
+        label.skeletonTextLineHeight = .fixed(12)
+        label.linesCornerRadius = 6
         return label
     }()
     
@@ -48,12 +65,13 @@ class EmployeeTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+        isSkeletonable = true
         contentView.addSubview(contentWhiteView)
-        contentWhiteView.addSubview(avatarImageView)
-        contentWhiteView.addSubview(nameLabel)
-        contentWhiteView.addSubview(positionLabel)
-        contentWhiteView.addSubview(userTagLabel)
+        contentView.addSubview(avatarImageView)
+        contentView.addSubview(nameLabel)
+        contentView.addSubview(positionLabel)
+        contentView.addSubview(userTagLabel)
+        contentView.addSubview(nameLabelSkeleton)
         setupConstraints()
     }
     
@@ -64,7 +82,6 @@ class EmployeeTableViewCell: UITableViewCell {
     private func setupConstraints() {
         contentWhiteView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.height.equalTo(84)
         }
         
         avatarImageView.snp.makeConstraints { make in
@@ -79,9 +96,15 @@ class EmployeeTableViewCell: UITableViewCell {
             make.left.equalTo(avatarImageView.snp.right).offset(16)
         }
         
+        nameLabelSkeleton.snp.makeConstraints { make in
+            make.edges.equalTo(nameLabel)
+            make.width.equalTo(144)
+        }
+        
         positionLabel.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.bottom).offset(4)
+            make.top.equalTo(contentWhiteView).offset(45)
             make.left.equalTo(nameLabel.snp.left)
+            make.width.equalTo(80)
         }
         
         userTagLabel.snp.makeConstraints { make in
@@ -90,18 +113,27 @@ class EmployeeTableViewCell: UITableViewCell {
         }
     }
     
-    public func configure(with employee: Employee) {
-        nameLabel.text = "\(employee.firstName) \(employee.lastName)"
-        positionLabel.text = employee.position
-        userTagLabel.text = employee.userTag.lowercased()
-        
-        if let url = URL(string: employee.avatarUrl) {
-            loadImage(from: url)
+    public func configure(with employee: Employee?) {
+        if let employee = employee {
+            
+            nameLabel.text = "\(employee.firstName) \(employee.lastName)"
+            positionLabel.text = employee.position
+            userTagLabel.text = employee.userTag.lowercased()
+            
+            if let url = URL(string: employee.avatarUrl) {
+                loadImage(from: url)
+            }
+        }
+        else{
+            
+            nameLabel.text = nil
+            positionLabel.text = nil
+            userTagLabel.text = nil
+            avatarImageView.image = nil
         }
     }
+    
     private func loadImage(from url: URL) {
-        // Здесь должна быть ваша логика загрузки изображений,
-        // например, с использованием URLSession или библиотеки для кэширования изображений, такой как SDWebImage
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
             guard let data = data, let image = UIImage(data: data) else { return }
             DispatchQueue.main.async {
