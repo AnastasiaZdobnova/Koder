@@ -49,33 +49,14 @@ final class MainScreenModel: MainScreenModelProtocol {
     }
     
     func numberOfEmployees(inCategory category: String, search: String) -> Int {
-        if category == "Все" {
-            return filterSearch(employees: employees, search: search).count
-        } else {
-            // Найти соответствующий rawValue для категории
-            if let departmentRawValue = departments.first(where: { $0.1 == category })?.0 {
-                var filteredEmployees = employees.filter { $0.department.rawValue == departmentRawValue }
-                filteredEmployees = filterSearch(employees: filteredEmployees, search: search)
-                return filteredEmployees.count
-            }
-        }
-        return 0
+       
+        return filterSearch(search: search, category: category).count
     }
 
     func getEmployeesInCategory(inCategory category: String, sort: String, search: String) -> [Employee] {
         var filteredEmployees: [Employee] = []
-
-        if category == "Все" {
-            filteredEmployees = employees
-        } else {
-            // Найти соответствующий rawValue для категории
-            if let departmentRawValue = departments.first(where: { $0.1 == category })?.0 {
-                filteredEmployees = employees.filter { $0.department.rawValue == departmentRawValue }
-            }
-        }
-
-        // Фильтрация сотрудников по строке поиска
-        filteredEmployees = filterSearch(employees: filteredEmployees, search: search)
+        // Фильтрация сотрудников по строке поиска и категории
+        filteredEmployees = filterSearch(search: search, category: category)
 
         // Сортировка сотрудников
         if sort == "По алфавиту" {
@@ -101,12 +82,25 @@ final class MainScreenModel: MainScreenModelProtocol {
             return upcomingBirthdays + pastBirthdays
         }
     }
-    private func filterSearch(employees: [Employee], search: String) -> [Employee] {
+    private func filterSearch(search: String, category: String) -> [Employee] {
+        
         var filteredEmployees = employees
+        
         if !search.isEmpty {
             filteredEmployees = employees.filter { employee in
                 employee.firstName.lowercased().contains(search.lowercased()) ||
-                employee.lastName.lowercased().contains(search.lowercased())
+                employee.lastName.lowercased().contains(search.lowercased()) ||
+                employee.userTag.lowercased().contains(search.lowercased())
+            }
+        }
+        
+        if category == "Все" {
+            return filteredEmployees
+        } else {
+            // Найти соответствующий rawValue для категории
+            if let departmentRawValue = departments.first(where: { $0.1 == category })?.0 {
+                filteredEmployees = employees.filter { $0.department.rawValue == departmentRawValue }
+                return filteredEmployees
             }
         }
         return filteredEmployees

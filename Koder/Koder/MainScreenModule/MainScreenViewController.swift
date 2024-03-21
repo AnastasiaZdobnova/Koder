@@ -24,7 +24,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     
     private let nameTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введи имя, тег, почту"
+        textField.placeholder = "Введи имя, тег..."
         textField.borderStyle = .roundedRect
         textField.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         textField.textColor = .black
@@ -59,8 +59,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         mainPresenter.fetchEmployees()
         setupTableView()
         setupNavigationBar()
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
-//        view.addGestureRecognizer(tapGesture)
+
         nameTextField.delegate = self
     }
     
