@@ -21,12 +21,33 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     private var selectedSort = "По алфавиту"
     private var tableView: UITableView!
     
+    private let nameTextField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "Введи имя, тег, почту"
+        textField.borderStyle = .roundedRect
+        textField.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        textField.textColor = .black
+        textField.backgroundColor = .clear
+        return textField
+    }()
+    
     private lazy var filterButton: UIButton = {
         let button = UIButton(type: .custom)
         if let image = UIImage(named: "filter") {
             button.setImage(image, for: .normal)
         }
         button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        button.isHidden = false
+        return button
+    }()
+    
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("Отмена", for: .normal) // Используйте setTitle(_:for:) для установки текста
+        button.setTitleColor(.purple, for: .normal)
+        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+        button.isHidden = true
+        //button.backgroundColor = .blue
         return button
     }()
     
@@ -38,6 +59,9 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         mainPresenter.fetchEmployees()
         setupTableView()
         setupNavigationBar()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
+        view.addGestureRecognizer(tapGesture)
+        nameTextField.delegate = self
     }
     
     init(presenter: MainScreenPresenterProtocol) {
@@ -48,13 +72,32 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        print("textFieldDidBeginEditing")
+        filterButton.isHidden = true
+        cancelButton.isHidden = false
+    }
     
     private func setupNavigationBar(){
         view.addSubview(filterButton)
+        view.addSubview(nameTextField)
+        view.addSubview(cancelButton)
         
         filterButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
             make.right.equalToSuperview().inset(30)
+        }
+        
+        nameTextField.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(14)
+            make.height.equalTo(24)
+            make.left.equalToSuperview().offset(28)
+            make.width.equalTo(204)
+        }
+        
+        cancelButton.snp.makeConstraints { make in
+            make.right.equalToSuperview().inset(28)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(17)
         }
     }
     
@@ -98,6 +141,20 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         self.tableView.reloadData()
     }
     
+    @objc private func cancelButtonTapped() {
+        print("cancelButtonTapped")
+        nameTextField.text = ""
+        nameTextField.resignFirstResponder() // Скрывает клавиатуру
+        filterButton.isHidden = false
+        cancelButton.isHidden = true
+    }
+    
+    @objc private func viewTapped() {
+        view.endEditing(true) // Скрывает клавиатуру
+        filterButton.isHidden = false
+        cancelButton.isHidden = true
+    }
+    
     @objc private func filterButtonTapped() {
         print("Filter button tapped")
         mainPresenter.showFilterBottomSheet(selectedSort: self.selectedSort)
@@ -133,7 +190,7 @@ extension MainScreenViewController: UICollectionViewDataSource, UICollectionView
         let departmentName = indexPath.row == 0 ? "Все" : Array(mainPresenter.getDepartmentNames())[indexPath.row - 1]
         selectedCategory = departmentName
         print("selectedCategory - \(departmentName)")
-        collectionView.reloadData() 
+        collectionView.reloadData()
         tableView.reloadData()
     }
 }
@@ -181,4 +238,8 @@ extension MainScreenViewController: FilterBottomSheetDelegate {
         selectedSort = sortOption
         tableView.reloadData()
     }
+}
+
+extension MainScreenViewController: UITextFieldDelegate{
+    
 }
