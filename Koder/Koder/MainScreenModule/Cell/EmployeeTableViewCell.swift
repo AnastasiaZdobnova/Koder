@@ -9,10 +9,12 @@ import Foundation
 import SnapKit
 import SkeletonView
 
+
 class EmployeeTableViewCell: UITableViewCell {
     
     static let identifier = "EmployeeTableViewCell"
     private var nameLabelRightConstraint: Constraint?
+    private var requestDelay: TimeInterval = 1
     
     private let contentWhiteView: UIView = {
         let view = UIView()
@@ -26,6 +28,7 @@ class EmployeeTableViewCell: UITableViewCell {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 72/2 // Половина высоты и ширины для круглой формы\
         imageView.isSkeletonable = true
+        imageView.image = UIImage(named: "goose")
         return imageView
     }()
     
@@ -124,19 +127,12 @@ class EmployeeTableViewCell: UITableViewCell {
                 loadImage(from: url)
             }
         }
-        else{
-//            
-//            nameLabel.text = nil
-//            positionLabel.text = nil
-//            userTagLabel.text = nil
-//            avatarImageView.image = nil
-        }
     }
     
     private func loadImage(from url: URL) {
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
             guard let data = data, let image = UIImage(data: data) else { return }
-            DispatchQueue.main.async {
+            DispatchQueue.main.asyncAfter(deadline: .now() + self!.requestDelay) {
                 self?.avatarImageView.image = image
             }
         }
@@ -145,10 +141,11 @@ class EmployeeTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        avatarImageView.image = nil
+        avatarImageView.image = UIImage(named: "goose")
         nameLabel.text = nil
         positionLabel.text = nil
         userTagLabel.text = nil
     }
 }
+
 
