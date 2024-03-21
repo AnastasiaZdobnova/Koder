@@ -221,7 +221,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
     }
     
     private func configureNavigationBar() {
-        let backButtonImage = UIImage(named: "arrow")?.withRenderingMode(.alwaysOriginal) // Замените "arrow" на название вашего изображения
+        let backButtonImage = UIImage(named: "arrow")?.withRenderingMode(.alwaysOriginal)
         let backButton = UIBarButtonItem(image: backButtonImage, style: .plain, target: self, action: #selector(backButtonTapped))
         navigationItem.leftBarButtonItem = backButton
     }

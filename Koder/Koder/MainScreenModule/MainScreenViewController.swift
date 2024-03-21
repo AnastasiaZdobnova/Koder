@@ -22,6 +22,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     private var selectSearch = ""
     private var tableView: UITableView!
     private var grayViewRightConstraint: Constraint?
+    private var isDataLoaded = false
     
     private let grayView: UIView = {
         let view = UIView()
@@ -31,7 +32,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         return view
     }()
     
-    private let nameTextField: UITextField = {
+    private let findTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Введи имя, тег..."
         textField.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
@@ -70,6 +71,14 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         return button
     }()
     
+    private let notFindImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "notFind")
+        imageView.contentMode = .scaleAspectFit
+        imageView.isHidden = true
+        return imageView
+    }()
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = true
@@ -82,7 +91,13 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         mainPresenter.fetchEmployees()
         setupTableView()
         setupNavigationBar()
-        nameTextField.delegate = self
+        findTextField.delegate = self
+        
+        view.addSubview(notFindImageView)
+        notFindImageView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(176)
+            make.left.right.equalToSuperview().inset(16)
+        }
     }
     
     init(presenter: MainScreenPresenterProtocol) {
@@ -97,7 +112,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     private func setupNavigationBar(){
         view.addSubview(grayView)
         view.addSubview(filterButton)
-        view.addSubview(nameTextField)
+        view.addSubview(findTextField)
         view.addSubview(cancelButton)
         
         grayView.snp.makeConstraints { make in
@@ -112,7 +127,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             make.right.equalToSuperview().inset(30)
         }
         
-        nameTextField.snp.makeConstraints { make in
+        findTextField.snp.makeConstraints { make in
             make.centerY.equalTo(grayView)
             make.height.equalTo(24)
             make.left.equalToSuperview().offset(28)
@@ -162,6 +177,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     }
     
     func updateUI(with employees: [Employee]) {
+        self.isDataLoaded = true
         self.tableView.reloadData()
     }
     
@@ -181,16 +197,16 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     }
 
     @objc private func xButtonTapped() {
-        nameTextField.text = ""
+        findTextField.text = ""
         selectSearch = ""
         tableView.reloadData()
     }
     
     @objc private func cancelButtonTapped() {
-        nameTextField.text = ""
+        findTextField.text = ""
         selectSearch = ""
         tableView.reloadData()
-        nameTextField.resignFirstResponder() // Скрывает клавиатуру
+        findTextField.resignFirstResponder() // Скрывает клавиатуру
         filterButton.isHidden = false
         cancelButton.isHidden = true
         xButton.isHidden = true
@@ -252,8 +268,9 @@ extension String {
 
 extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //print(mainPresenter.numberOfEmployees(selectedCategory: selectedCategory))
-        return mainPresenter.numberOfEmployees(selectedCategory: selectedCategory, search: selectSearch)
+        let numberOfEmployees = mainPresenter.numberOfEmployees(selectedCategory: selectedCategory, search: selectSearch)
+        notFindImageView.isHidden = !(numberOfEmployees == 0 && isDataLoaded)
+        return numberOfEmployees
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -293,5 +310,4 @@ extension MainScreenViewController: UITextFieldDelegate{
         }
         return true
     }
-
 }
