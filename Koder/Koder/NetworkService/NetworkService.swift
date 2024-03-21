@@ -9,23 +9,23 @@ import Foundation
 
 class NetworkService {
     private let baseUrl = URL(string: "https://stoplight.io/mocks/kode-api/trainee-test/331141861/users")!
-    private var preferHeaderValue: String = "code=200, example=success"
     private var requestDelay: TimeInterval = 2
-
-    func setResponseType(_ type: ResponseType) {
-        switch type {
-        case .success:
-            preferHeaderValue = "code=200, example=success"
-        case .error:
-            preferHeaderValue = "code=500, example=error-500"
-        }
+    private var preferHeaderValues: [ResponseType: String] = [
+        .success: "code=200, example=success",
+        .error: "code=500, example=error-500"
+    ]
+    private var currentPreferHeader: String {
+        preferHeaderValues[currentResponseType] ?? "code=200, example=success"
     }
+    
+    private var currentResponseType: ResponseType = .success // Тут указываем  error или success
+
 
     func fetchEmployees(completion: @escaping (Result<EmployeeResponse, Error>) -> Void) {
         var request = URLRequest(url: baseUrl)
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(preferHeaderValue, forHTTPHeaderField: "Prefer")
+        request.setValue(currentPreferHeader, forHTTPHeaderField: "Prefer")
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.asyncAfter(deadline: .now() + self.requestDelay) {
