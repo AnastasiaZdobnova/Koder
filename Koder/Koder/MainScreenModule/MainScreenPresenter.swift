@@ -46,10 +46,8 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
                     self?.mainViewController?.updateUI(with: employees)
                 case .failure(let error):
                     print("Error fetching employees: \(error)")
-                    // Здесь может быть код для обработки ошибки, но не показываем ошибку пользователю
+                    self?.mainViewController?.endRefreshing()
                 }
-                // В любом случае, останавливаем анимацию pull-to-refresh
-                self?.mainViewController?.endRefreshing()
             }
         }
     }

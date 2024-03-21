@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SnapKit
+import SkeletonView
 
 protocol MainScreenViewControllerProtocol : UIViewController {
     var mainPresenter: MainScreenPresenterProtocol { get }
@@ -98,6 +99,8 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             make.top.equalTo(view.safeAreaLayoutGuide).offset(176)
             make.left.right.equalToSuperview().inset(16)
         }
+        tableView.isSkeletonable = true
+        showSkeleton()
     }
     
     init(presenter: MainScreenPresenterProtocol) {
@@ -184,6 +187,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     func updateUI(with employees: [Employee]) {
         self.isDataLoaded = true
         self.tableView.reloadData()
+        tableView.hideSkeleton()
         endRefreshing()
     }
     
@@ -229,12 +233,18 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     }
     
     @objc private func refreshEmployeeData() {
+        showSkeleton()
         mainPresenter.fetchEmployees()
     }
     
     func showBottomSheet(_ bottomSheet: UIViewController) {
         self.present(bottomSheet, animated: true)
     }
+    
+    private func showSkeleton() {
+        tableView.showAnimatedSkeleton()
+    }
+    
 }
 
 extension MainScreenViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -323,5 +333,19 @@ extension MainScreenViewController: UITextFieldDelegate{
             tableView.reloadData()
         }
         return true
+    }
+}
+
+extension MainScreenViewController: SkeletonTableViewDataSource {
+    func numSections(in collectionSkeletonView: UITableView) -> Int {
+        return 1 // Количество секций для скелетона
+    }
+
+    func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10 // Примерное количество строк скелетона
+    }
+
+    func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
+        return "EmployeeTableViewCell" // Идентификатор вашей ячейки
     }
 }
