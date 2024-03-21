@@ -42,12 +42,14 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let employees):
-                    self?.mainScreenModel.employees = employees // Обновляем данные в модели
+                    self?.mainScreenModel.employees = employees
                     self?.mainViewController?.updateUI(with: employees)
                 case .failure(let error):
-                    // Обработка ошибки, например, показать UIAlert с ошибкой
                     print("Error fetching employees: \(error)")
+                    // Здесь может быть код для обработки ошибки, но не показываем ошибку пользователю
                 }
+                // В любом случае, останавливаем анимацию pull-to-refresh
+                self?.mainViewController?.endRefreshing()
             }
         }
     }
