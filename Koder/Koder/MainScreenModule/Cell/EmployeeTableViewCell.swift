@@ -96,8 +96,13 @@ class EmployeeTableViewCell: UITableViewCell {
             make.left.equalTo(avatarImageView.snp.right).offset(16)
         }
         
+        userTagLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(nameLabel)
+            make.left.equalTo(nameLabel.snp.right).offset(4)
+        }
+        
         nameLabelSkeleton.snp.makeConstraints { make in
-            make.edges.equalTo(nameLabel)
+            make.top.left.equalTo(nameLabel)
             make.width.equalTo(144)
         }
         
@@ -105,11 +110,6 @@ class EmployeeTableViewCell: UITableViewCell {
             make.top.equalTo(contentWhiteView).offset(45)
             make.left.equalTo(nameLabel.snp.left)
             make.width.equalTo(80)
-        }
-        
-        userTagLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(nameLabel)
-            make.left.equalTo(nameLabel.snp.right).offset(4)
         }
     }
     
@@ -125,11 +125,11 @@ class EmployeeTableViewCell: UITableViewCell {
             }
         }
         else{
-            
-            nameLabel.text = nil
-            positionLabel.text = nil
-            userTagLabel.text = nil
-            avatarImageView.image = nil
+//            
+//            nameLabel.text = nil
+//            positionLabel.text = nil
+//            userTagLabel.text = nil
+//            avatarImageView.image = nil
         }
     }
     
