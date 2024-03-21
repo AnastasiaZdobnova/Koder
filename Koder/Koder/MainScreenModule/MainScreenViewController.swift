@@ -17,13 +17,13 @@ protocol MainScreenViewControllerProtocol : UIViewController {
 class MainScreenViewController: UIViewController, MainScreenViewControllerProtocol {
     
     var mainPresenter: MainScreenPresenterProtocol
+    var isDataLoaded = false
     private var collectionView: UICollectionView!
     private var selectedCategory = "Все"
     private var selectedSort = "По алфавиту"
     private var selectSearch = ""
     private var tableView: UITableView!
     private var grayViewRightConstraint: Constraint?
-    private var isDataLoaded = false
     private var requestDelay: TimeInterval = 1
     
     private let grayView: UIView = {
@@ -84,13 +84,13 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = true
+        mainPresenter.fetchEmployees()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupCollectionView()
-        mainPresenter.fetchEmployees()
         setupTableView()
         setupNavigationBar()
         findTextField.delegate = self

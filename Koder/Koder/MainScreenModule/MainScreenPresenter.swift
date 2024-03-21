@@ -47,7 +47,13 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
                     self?.mainViewController?.updateUI(with: employees)
                 case .failure(let error):
                     print("Error fetching employees: \(error)")
-                    self?.mainViewController?.endRefreshing()
+                    if self?.mainViewController!.isDataLoaded == true {
+                        self?.mainViewController?.endRefreshing()
+                    }
+                    else{
+                        let errorView = FatalErrorViewController()
+                        self?.navigationController?.pushViewController(errorView, animated: true)
+                    }
                 }
             }
         }
