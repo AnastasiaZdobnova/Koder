@@ -21,11 +21,19 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     private var selectedSort = "По алфавиту"
     private var selectSearch = ""
     private var tableView: UITableView!
+    private var grayViewRightConstraint: Constraint?
+    
+    private let grayView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGray6 // Установка фона в серый цвет
+        view.layer.cornerRadius = 16 // Установка радиуса углов
+        view.clipsToBounds = true // Обрезка по границе радиуса углов
+        return view
+    }()
     
     private let nameTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Введи имя, тег..."
-        textField.borderStyle = .roundedRect
         textField.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         textField.textColor = .black
         textField.backgroundColor = .clear
@@ -44,22 +52,36 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Отмена", for: .normal) // Используйте setTitle(_:for:) для установки текста
+        button.setTitle("Отмена", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         button.setTitleColor(.purple, for: .normal)
         button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         button.isHidden = true
         return button
     }()
     
+    private lazy var xButton: UIButton = {
+        let button = UIButton(type: .custom)
+        if let image = UIImage(named: "x") {
+            button.setImage(image, for: .normal)
+        }
+        button.addTarget(self, action: #selector(xButtonTapped), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        navigationController?.isNavigationBarHidden = true
         setupCollectionView()
         mainPresenter.fetchEmployees()
         setupTableView()
         setupNavigationBar()
-
         nameTextField.delegate = self
     }
     
@@ -71,24 +93,27 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        print("textFieldDidBeginEditing")
-        filterButton.isHidden = true
-        cancelButton.isHidden = false
-    }
     
     private func setupNavigationBar(){
+        view.addSubview(grayView)
         view.addSubview(filterButton)
         view.addSubview(nameTextField)
         view.addSubview(cancelButton)
         
+        grayView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(6)
+            make.left.equalToSuperview().inset(16)
+            self.grayViewRightConstraint = make.right.equalToSuperview().inset(16).constraint
+            make.height.equalTo(40)
+        }
+        
         filterButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+            make.centerY.equalTo(grayView)
             make.right.equalToSuperview().inset(30)
         }
         
         nameTextField.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(14)
+            make.centerY.equalTo(grayView)
             make.height.equalTo(24)
             make.left.equalToSuperview().offset(28)
             make.width.equalTo(204)
@@ -96,7 +121,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         
         cancelButton.snp.makeConstraints { make in
             make.right.equalToSuperview().inset(28)
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(17)
+            make.centerY.equalTo(grayView)
         }
     }
     
@@ -140,20 +165,36 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         self.tableView.reloadData()
     }
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        print("textFieldDidBeginEditing")
+        filterButton.isHidden = true
+        cancelButton.isHidden = false
+        
+        grayViewRightConstraint?.update(inset: 94)
+        view.addSubview(xButton)
+        xButton.isHidden = false
+        
+        xButton.snp.makeConstraints { make in
+            make.centerY.equalTo(grayView)
+            make.right.equalTo(grayView).inset(13)
+        }
+    }
+
+    @objc private func xButtonTapped() {
+        nameTextField.text = ""
+        selectSearch = ""
+        tableView.reloadData()
+    }
+    
     @objc private func cancelButtonTapped() {
-        print("cancelButtonTapped")
         nameTextField.text = ""
         selectSearch = ""
         tableView.reloadData()
         nameTextField.resignFirstResponder() // Скрывает клавиатуру
         filterButton.isHidden = false
         cancelButton.isHidden = true
-    }
-    
-    @objc private func viewTapped() {
-        view.endEditing(true) // Скрывает клавиатуру
-        filterButton.isHidden = false
-        cancelButton.isHidden = true
+        xButton.isHidden = true
+        grayViewRightConstraint?.update(inset: 16)
     }
     
     @objc private func filterButtonTapped() {
@@ -193,6 +234,7 @@ extension MainScreenViewController: UICollectionViewDataSource, UICollectionView
         selectedCategory = departmentName
         print("selectedCategory - \(departmentName)")
         collectionView.reloadData()
+        print("selected search : \(selectSearch)")
         tableView.reloadData()
     }
 }
@@ -248,7 +290,6 @@ extension MainScreenViewController: UITextFieldDelegate{
             let updatedText = currentText.replacingCharacters(in: textRange, with: string)
             self.selectSearch = updatedText
             tableView.reloadData()
-            
         }
         return true
     }

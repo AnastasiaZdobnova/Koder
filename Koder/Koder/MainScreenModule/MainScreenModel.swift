@@ -99,7 +99,7 @@ final class MainScreenModel: MainScreenModelProtocol {
         } else {
             // Найти соответствующий rawValue для категории
             if let departmentRawValue = departments.first(where: { $0.1 == category })?.0 {
-                filteredEmployees = employees.filter { $0.department.rawValue == departmentRawValue }
+                filteredEmployees = filteredEmployees.filter { $0.department.rawValue == departmentRawValue }
                 return filteredEmployees
             }
         }
