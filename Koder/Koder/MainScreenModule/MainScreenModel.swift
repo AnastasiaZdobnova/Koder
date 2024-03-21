@@ -11,8 +11,8 @@ protocol MainScreenModelProtocol: AnyObject {
     var departments: [(String, String)] { get }
     var employees: [Employee] { get set }
     func fetchEmployees(completion: @escaping (Result<[Employee], Error>) -> Void)
-    func numberOfEmployees(inCategory category: String) -> Int
-    func getEmployeesInCategory(inCategory category: String, sort: String) -> [Employee]
+    func numberOfEmployees(inCategory category: String, search: String) -> Int
+    func getEmployeesInCategory(inCategory category: String, sort: String, search: String) -> [Employee]
 }
 
 final class MainScreenModel: MainScreenModelProtocol {
@@ -48,21 +48,23 @@ final class MainScreenModel: MainScreenModelProtocol {
         }
     }
     
-    func numberOfEmployees(inCategory category: String) -> Int {
+    func numberOfEmployees(inCategory category: String, search: String) -> Int {
         if category == "Все" {
-            return employees.count
+            return filterSearch(employees: employees, search: search).count
         } else {
             // Найти соответствующий rawValue для категории
             if let departmentRawValue = departments.first(where: { $0.1 == category })?.0 {
-                return employees.filter { $0.department.rawValue == departmentRawValue }.count
+                var filteredEmployees = employees.filter { $0.department.rawValue == departmentRawValue }
+                filteredEmployees = filterSearch(employees: filteredEmployees, search: search)
+                return filteredEmployees.count
             }
         }
         return 0
     }
 
-    func getEmployeesInCategory(inCategory category: String, sort: String) -> [Employee] {
+    func getEmployeesInCategory(inCategory category: String, sort: String, search: String) -> [Employee] {
         var filteredEmployees: [Employee] = []
-        
+
         if category == "Все" {
             filteredEmployees = employees
         } else {
@@ -71,7 +73,11 @@ final class MainScreenModel: MainScreenModelProtocol {
                 filteredEmployees = employees.filter { $0.department.rawValue == departmentRawValue }
             }
         }
-        
+
+        // Фильтрация сотрудников по строке поиска
+        filteredEmployees = filterSearch(employees: filteredEmployees, search: search)
+
+        // Сортировка сотрудников
         if sort == "По алфавиту" {
             return filteredEmployees.sorted { $0.firstName.lowercased() < $1.firstName.lowercased() }
         } else {
@@ -92,8 +98,17 @@ final class MainScreenModel: MainScreenModelProtocol {
             let pastBirthdays = sortedEmployees.filter { String($0.birthday.dropFirst(5)) < currentMonthDay }
 
             // Объединение двух массивов, так что предстоящие дни рождения идут первыми
-            let sortedByBirthday = upcomingBirthdays + pastBirthdays
-            return sortedByBirthday
+            return upcomingBirthdays + pastBirthdays
         }
+    }
+    private func filterSearch(employees: [Employee], search: String) -> [Employee] {
+        var filteredEmployees = employees
+        if !search.isEmpty {
+            filteredEmployees = employees.filter { employee in
+                employee.firstName.lowercased().contains(search.lowercased()) ||
+                employee.lastName.lowercased().contains(search.lowercased())
+            }
+        }
+        return filteredEmployees
     }
 }

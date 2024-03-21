@@ -12,8 +12,8 @@ protocol MainScreenPresenterProtocol: AnyObject {
     var mainScreenModel : MainScreenModelProtocol { get set }
     func getDepartmentNames() -> [String]
     func fetchEmployees()
-    func numberOfEmployees(selectedCategory: String) -> Int
-    func getEmployeesInCategory(atIndex index: Int, category: String, sort: String) -> Employee
+    func numberOfEmployees(selectedCategory: String, search: String) -> Int 
+    func getEmployeesInCategory(atIndex index: Int, category: String, sort: String, search: String) -> Employee
     func showEmployeeDetailScreen(for employee: Employee)
     func showFilterBottomSheet(selectedSort: String)
 }
@@ -52,12 +52,12 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
         }
     }
     
-    func numberOfEmployees(selectedCategory: String) -> Int {
-        return mainScreenModel.numberOfEmployees(inCategory: selectedCategory)
+    func numberOfEmployees(selectedCategory: String, search: String) -> Int {
+        return mainScreenModel.numberOfEmployees(inCategory: selectedCategory, search: search)
     }
     
-    func getEmployeesInCategory(atIndex index: Int, category: String, sort: String) -> Employee {
-        return mainScreenModel.getEmployeesInCategory(inCategory: category, sort: sort)[index]
+    func getEmployeesInCategory(atIndex index: Int, category: String, sort: String, search: String) -> Employee {
+        return mainScreenModel.getEmployeesInCategory(inCategory: category, sort: sort, search: search)[index]
     }
     
     func showEmployeeDetailScreen(for employee: Employee) {

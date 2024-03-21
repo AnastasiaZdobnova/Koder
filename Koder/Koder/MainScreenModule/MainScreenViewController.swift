@@ -19,6 +19,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     private var collectionView: UICollectionView!
     private var selectedCategory = "Все"
     private var selectedSort = "По алфавиту"
+    private var selectSearch = ""
     private var tableView: UITableView!
     
     private let nameTextField: UITextField = {
@@ -47,7 +48,6 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         button.setTitleColor(.purple, for: .normal)
         button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         button.isHidden = true
-        //button.backgroundColor = .blue
         return button
     }()
     
@@ -59,8 +59,8 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         mainPresenter.fetchEmployees()
         setupTableView()
         setupNavigationBar()
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
-        view.addGestureRecognizer(tapGesture)
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
+//        view.addGestureRecognizer(tapGesture)
         nameTextField.delegate = self
     }
     
@@ -144,6 +144,8 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     @objc private func cancelButtonTapped() {
         print("cancelButtonTapped")
         nameTextField.text = ""
+        selectSearch = ""
+        tableView.reloadData()
         nameTextField.resignFirstResponder() // Скрывает клавиатуру
         filterButton.isHidden = false
         cancelButton.isHidden = true
@@ -159,6 +161,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         print("Filter button tapped")
         mainPresenter.showFilterBottomSheet(selectedSort: self.selectedSort)
     }
+    
     func showBottomSheet(_ bottomSheet: UIViewController) {
         self.present(bottomSheet, animated: true)
     }
@@ -208,13 +211,13 @@ extension String {
 
 extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(mainPresenter.numberOfEmployees(selectedCategory: selectedCategory))
-        return mainPresenter.numberOfEmployees(selectedCategory: selectedCategory)
+        //print(mainPresenter.numberOfEmployees(selectedCategory: selectedCategory))
+        return mainPresenter.numberOfEmployees(selectedCategory: selectedCategory, search: selectSearch)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "EmployeeTableViewCell", for: indexPath) as! EmployeeTableViewCell
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort)
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch)
         cell.configure(with: employee)
         return cell
     }
@@ -224,7 +227,7 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort)
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch)
         mainPresenter.showEmployeeDetailScreen(for: employee)
     }
 }
@@ -241,5 +244,14 @@ extension MainScreenViewController: FilterBottomSheetDelegate {
 }
 
 extension MainScreenViewController: UITextFieldDelegate{
-    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let currentText = textField.text, let textRange = Range(range, in: currentText) {
+            let updatedText = currentText.replacingCharacters(in: textRange, with: string)
+            self.selectSearch = updatedText
+            tableView.reloadData()
+            
+        }
+        return true
+    }
+
 }
