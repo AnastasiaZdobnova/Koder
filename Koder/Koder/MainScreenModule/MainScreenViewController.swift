@@ -93,13 +93,14 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         setupCollectionView()
         setupTableView()
         setupNavigationBar()
+        findTextField.delegate = self
         
         view.addSubview(notFindImageView)
         notFindImageView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(176)
             make.left.right.equalToSuperview().inset(16)
         }
-        
+        tableView.isSkeletonable = true
         showSkeleton()
     }
     
@@ -141,8 +142,6 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             make.right.equalToSuperview().inset(28)
             make.centerY.equalTo(grayView)
         }
-        
-        findTextField.delegate = self
     }
     
     private func setupCollectionView() {
@@ -167,18 +166,16 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     
     private func setupTableView() {
         tableView = UITableView()
-        tableView.estimatedSectionHeaderHeight = 0
         tableView.register(EmployeeTableViewCell.self, forCellReuseIdentifier: "EmployeeTableViewCell")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
-        tableView.isSkeletonable = true
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshEmployeeData), for: .valueChanged)
         tableView.refreshControl = refreshControl
-        
+
         view.addSubview(tableView)
         
         tableView.snp.makeConstraints { make in
@@ -200,6 +197,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        print("textFieldDidBeginEditing")
         filterButton.isHidden = true
         cancelButton.isHidden = false
         
@@ -212,7 +210,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             make.right.equalTo(grayView).inset(13)
         }
     }
-    
+
     @objc private func xButtonTapped() {
         findTextField.text = ""
         selectSearch = ""
@@ -231,6 +229,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     }
     
     @objc private func filterButtonTapped() {
+        print("Filter button tapped")
         mainPresenter.showFilterBottomSheet(selectedSort: self.selectedSort)
     }
     
@@ -273,7 +272,9 @@ extension MainScreenViewController: UICollectionViewDataSource, UICollectionView
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let departmentName = indexPath.row == 0 ? "Все" : Array(mainPresenter.getDepartmentNames())[indexPath.row - 1]
         selectedCategory = departmentName
+        print("selectedCategory - \(departmentName)")
         collectionView.reloadData()
+        print("selected search : \(selectSearch)")
         tableView.reloadData()
     }
 }
@@ -291,18 +292,15 @@ extension String {
 
 extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let numberOfEmployees = mainPresenter.numberOfRowsInSection(inCategory: selectedCategory, sort: selectedSort, search: selectSearch, section: section)
+        let numberOfEmployees = mainPresenter.numberOfEmployees(selectedCategory: selectedCategory, search: selectSearch)
         notFindImageView.isHidden = !(numberOfEmployees == 0 && isDataLoaded)
         return numberOfEmployees
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "EmployeeTableViewCell", for: indexPath) as! EmployeeTableViewCell
-        
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch, section: indexPath.section)
-        cell.configure(with: employee, sort: selectedSort)
-        
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch)
+        cell.configure(with: employee)
         return cell
     }
     
@@ -311,33 +309,8 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch, section: indexPath.section)
+        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch)
         mainPresenter.showEmployeeDetailScreen(for: employee)
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return selectedSort == "По алфавиту" ? 1 : 2
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if section == 1 && mainPresenter.numberOfRowsInSection(inCategory: selectedCategory, sort: selectedSort, search: selectSearch, section: section) != 0 {
-            let headerView = SectionHeaderView()
-            let currentYear = Calendar.current.component(.year, from: Date())
-            let title = "\(currentYear + 1)"
-            headerView.configure(with: title)
-            return headerView
-        }
-        
-        return nil
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 1 {
-            return 40 // Высота для второй секции
-        } else {
-            return 0 // Минимальное значение для секций без заголовка
-        }
     }
 }
 
@@ -371,12 +344,12 @@ extension MainScreenViewController: SkeletonTableViewDataSource {
     func numSections(in collectionSkeletonView: UITableView) -> Int {
         return 1 // Количество секций для скелетона
     }
-    
+
     func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 10 // Примерное количество строк скелетона
     }
-    
+
     func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
-        return "EmployeeTableViewCell" // Идентификатор ячейки
+        return "EmployeeTableViewCell" // Идентификатор вашей ячейки
     }
 }
