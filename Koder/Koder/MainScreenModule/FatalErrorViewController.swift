@@ -84,7 +84,9 @@ class FatalErrorViewController: UIViewController {
         }
     }
     
+    
     @objc private func afreshButtonTapped() {
+        print("Filter button tapped")
         navigationController?.popToRootViewController(animated: true)
     }
 }

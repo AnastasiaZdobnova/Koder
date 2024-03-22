@@ -12,11 +12,10 @@ protocol MainScreenPresenterProtocol: AnyObject {
     var mainScreenModel : MainScreenModelProtocol { get set }
     func getDepartmentNames() -> [String]
     func fetchEmployees()
-    func getEmployeesInCategory(atIndex index: Int, category: String, sort: String, search: String, section: Int) -> Employee
-    func getPastBirthdays(inCategory category: String, sort: String, search: String) -> [Employee]
+    func numberOfEmployees(selectedCategory: String, search: String) -> Int 
+    func getEmployeesInCategory(atIndex index: Int, category: String, sort: String, search: String) -> Employee
     func showEmployeeDetailScreen(for employee: Employee)
     func showFilterBottomSheet(selectedSort: String)
-    func numberOfRowsInSection(inCategory: String, sort: String, search: String, section: Int) -> Int
 }
 
 final class MainScreenPresenter: MainScreenPresenterProtocol {
@@ -47,6 +46,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
                     self?.mainScreenModel.employees = employees
                     self?.mainViewController?.updateUI(with: employees)
                 case .failure(let error):
+                    print("Error fetching employees: \(error)")
                     if self?.mainViewController!.isDataLoaded == true {
                         self?.mainViewController?.endRefreshing()
                     }
@@ -59,26 +59,12 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
         }
     }
     
-    private func numberOfEmployees(selectedCategory: String, search: String) -> Int {
+    func numberOfEmployees(selectedCategory: String, search: String) -> Int {
         return mainScreenModel.numberOfEmployees(inCategory: selectedCategory, search: search)
     }
     
-    func getEmployeesInCategory(atIndex index: Int, category: String, sort: String, search: String, section: Int) -> Employee {
-        if sort == "По алфавиту"{
-            return mainScreenModel.getEmployeesInCategory(inCategory: category, sort: sort, search: search)[index]
-        }
-        else{
-            let employeeGroup = section == 0 ? getUpcomingBirthdays(inCategory: category, sort: sort, search: search) : getPastBirthdays(inCategory: category, sort: sort, search: search)
-            return employeeGroup[index]
-        }
-    }
-    
-    private func getUpcomingBirthdays(inCategory category: String, sort: String, search: String) -> [Employee]{
-        return mainScreenModel.getUpcomingBirthdays(inCategory: category, sort: sort, search: search)
-    }
-    
-    func getPastBirthdays(inCategory category: String, sort: String, search: String) -> [Employee]{
-        return mainScreenModel.getPastBirthdays(inCategory: category, sort: sort, search: search)
+    func getEmployeesInCategory(atIndex index: Int, category: String, sort: String, search: String) -> Employee {
+        return mainScreenModel.getEmployeesInCategory(inCategory: category, sort: sort, search: search)[index]
     }
     
     func showEmployeeDetailScreen(for employee: Employee) {
@@ -98,6 +84,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
         let model = FilterBottomSheetModel()
         let presenter = FilterBottomSheetPresenter(model: model)
         let bottomSheetVC = FilterBottomSheetViewController(presenter: presenter, selectedSort: selectedSort)
+        print("Selected\(selectedSort)")
         
         model.filterBottomSheetPresenter = presenter
         presenter.filterBottomSheetController = bottomSheetVC
@@ -105,22 +92,5 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
         bottomSheetVC.modalPresentationStyle = .pageSheet
         bottomSheetVC.modalTransitionStyle = .coverVertical
         mainViewController?.showBottomSheet(bottomSheetVC)
-    }
-    
-    func numberOfRowsInSection(inCategory: String, sort: String, search: String, section: Int) -> Int {
-        var number = 0
-        if sort == "По алфавиту"{
-            number = numberOfEmployees(selectedCategory: inCategory, search: search)
-        }
-        else {
-            if section == 0 {
-                number = getUpcomingBirthdays(inCategory: inCategory, sort: sort, search: search).count
-            }
-            else{
-                number = getPastBirthdays(inCategory: inCategory, sort: sort, search: search).count
-            }
-        }
-        
-        return number
     }
 }
