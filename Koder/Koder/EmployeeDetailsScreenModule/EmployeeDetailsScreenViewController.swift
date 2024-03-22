@@ -99,11 +99,12 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = false
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColors.backgroundAppColor
+        view.backgroundColor = AppColors.textFieldColor
         configureNavigationBar()
         configureView(with: employeeDetailsPresenter.getEmployee())
         setupUI()

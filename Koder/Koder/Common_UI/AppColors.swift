@@ -17,6 +17,7 @@ struct AppColors {
     static let subtitleTextColor = UIColor(hex: "#97979B")
     static let darkSubtitleColor = UIColor(hex: "55555C")
     static let headerSectionColor = UIColor(hex: "C3C3C6")
+    static let skeletonColor = UIColor(hex: "F3F3F6")
 }
 
 extension UIColor {

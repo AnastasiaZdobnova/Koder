@@ -43,7 +43,10 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     
     private let findTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введи имя, тег..."
+        textField.attributedPlaceholder = NSAttributedString(
+            string: "Введи имя, тег...",
+            attributes: [NSAttributedString.Key.foregroundColor: AppColors.headerSectionColor]
+        )
         textField.tintColor = AppColors.accentColor
         textField.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         textField.textColor = AppColors.titleTextColor
@@ -167,6 +170,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.backgroundColor = AppColors.backgroundAppColor
         
         view.addSubview(collectionView)
         
@@ -187,6 +191,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
         tableView.isSkeletonable = true
+        tableView.backgroundColor = AppColors.backgroundAppColor
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshEmployeeData), for: .valueChanged)
@@ -258,7 +263,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     }
     
     private func showSkeleton() {
-        tableView.showAnimatedSkeleton()
+        tableView.showAnimatedSkeleton(usingColor: AppColors.skeletonColor)
     }
     
 }
@@ -338,6 +343,7 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 1 && mainPresenter.numberOfRowsInSection(inCategory: selectedCategory, sort: selectedSort, search: selectSearch, section: section) != 0 {
             let headerView = SectionHeaderView()
+            headerView.backgroundColor = AppColors.backgroundAppColor
             let currentYear = Calendar.current.component(.year, from: Date())
             let title = "\(currentYear + 1)"
             headerView.configure(with: title)

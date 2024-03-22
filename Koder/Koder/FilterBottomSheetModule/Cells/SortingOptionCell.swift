@@ -28,6 +28,7 @@ class SortingOptionCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        contentView.backgroundColor = AppColors.backgroundAppColor
         contentView.addSubview(iconImageView)
         contentView.addSubview(titleLabel)
         
