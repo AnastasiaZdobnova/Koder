@@ -7,7 +7,10 @@
 
 import Foundation
 import SnapKit
+import UIKit
 import SkeletonView
+import SDWebImage
+
 
 class EmployeeTableViewCell: UITableViewCell {
     
@@ -26,6 +29,7 @@ class EmployeeTableViewCell: UITableViewCell {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 72/2 // Половина высоты и ширины для круглой формы\
         imageView.isSkeletonable = true
+        imageView.image = UIImage(named: "goose")
         return imageView
     }()
     
@@ -115,32 +119,19 @@ class EmployeeTableViewCell: UITableViewCell {
     
     public func configure(with employee: Employee?) {
         if let employee = employee {
-            
             nameLabel.text = "\(employee.firstName) \(employee.lastName)"
             positionLabel.text = employee.position
             userTagLabel.text = employee.userTag.lowercased()
             
             if let url = URL(string: employee.avatarUrl) {
-                loadImage(from: url)
+                avatarImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "goose"))
             }
+        } else {
+            avatarImageView.image = UIImage(named: "goose")
+            nameLabel.text = nil
+            positionLabel.text = nil
+            userTagLabel.text = nil
         }
-        else{
-//            
-//            nameLabel.text = nil
-//            positionLabel.text = nil
-//            userTagLabel.text = nil
-//            avatarImageView.image = nil
-        }
-    }
-    
-    private func loadImage(from url: URL) {
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
-            guard let data = data, let image = UIImage(data: data) else { return }
-            DispatchQueue.main.async {
-                self?.avatarImageView.image = image
-            }
-        }
-        task.resume()
     }
     
     override func prepareForReuse() {
@@ -151,4 +142,5 @@ class EmployeeTableViewCell: UITableViewCell {
         userTagLabel.text = nil
     }
 }
+
 

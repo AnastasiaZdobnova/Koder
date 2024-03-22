@@ -7,6 +7,7 @@
 
 import Foundation
 import SnapKit
+import UIKit
 
 class SortingOptionCell: UITableViewCell {
     static let identifier = "SortingOptionCell"
