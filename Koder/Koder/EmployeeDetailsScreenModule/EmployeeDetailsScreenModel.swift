@@ -31,7 +31,7 @@ final class EmployeeDetailsScreenModel: EmployeeDetailsScreenModelProtocol {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
         if let birthdayDate = dateFormatter.date(from: employee.birthday) {
-            dateFormatter.dateStyle = .long
+            dateFormatter.dateStyle = .medium
             dateFormatter.locale = Locale(identifier: "ru_RU")
             return dateFormatter.string(from: birthdayDate)
         }

@@ -13,6 +13,8 @@ protocol MainScreenModelProtocol: AnyObject {
     func fetchEmployees(completion: @escaping (Result<[Employee], Error>) -> Void)
     func numberOfEmployees(inCategory category: String, search: String) -> Int
     func getEmployeesInCategory(inCategory category: String, sort: String, search: String) -> [Employee]
+    func getUpcomingBirthdays(inCategory category: String, sort: String, search: String) -> [Employee]
+    func getPastBirthdays(inCategory category: String, sort: String, search: String) -> [Employee]
 }
 
 final class MainScreenModel: MainScreenModelProtocol {
@@ -57,31 +59,50 @@ final class MainScreenModel: MainScreenModelProtocol {
         var filteredEmployees: [Employee] = []
         // Фильтрация сотрудников по строке поиска и категории
         filteredEmployees = filterSearch(search: search, category: category)
-
-        // Сортировка сотрудников
-        if sort == "По алфавиту" {
-            return filteredEmployees.sorted { $0.firstName.lowercased() < $1.firstName.lowercased() }
-        } else {
-            // Сортировка по дню рождения
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "MM-dd"
-            let today = Date()
-            let currentMonthDay = dateFormatter.string(from: today)
-
-            let sortedEmployees = filteredEmployees.sorted {
-                let birthday1 = String($0.birthday.dropFirst(5))
-                let birthday2 = String($1.birthday.dropFirst(5))
-                return birthday1 < birthday2
-            }
-
-            // Разделение на тех, кто уже отмечал день рождения в этом году, и тех, кто ещё нет
-            let upcomingBirthdays = sortedEmployees.filter { String($0.birthday.dropFirst(5)) >= currentMonthDay }
-            let pastBirthdays = sortedEmployees.filter { String($0.birthday.dropFirst(5)) < currentMonthDay }
-
-            // Объединение двух массивов, так что предстоящие дни рождения идут первыми
-            return upcomingBirthdays + pastBirthdays
-        }
+        return filteredEmployees.sorted { $0.firstName.lowercased() < $1.firstName.lowercased() }
     }
+    
+    func getUpcomingBirthdays(inCategory category: String, sort: String, search: String) -> [Employee]{
+        var filteredEmployees: [Employee] = []
+        // Фильтрация сотрудников по строке поиска и категории
+        filteredEmployees = filterSearch(search: search, category: category)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd"
+        let today = Date()
+        let currentMonthDay = dateFormatter.string(from: today)
+
+        let sortedEmployees = filteredEmployees.sorted {
+            let birthday1 = String($0.birthday.dropFirst(5))
+            let birthday2 = String($1.birthday.dropFirst(5))
+            return birthday1 < birthday2
+        }
+
+        // Разделение на тех, кто уже отмечал день рождения в этом году, и тех, кто ещё нет
+        let upcomingBirthdays = sortedEmployees.filter { String($0.birthday.dropFirst(5)) >= currentMonthDay }
+        return upcomingBirthdays
+    }
+    
+    func getPastBirthdays(inCategory category: String, sort: String, search: String) -> [Employee]{
+        var filteredEmployees: [Employee] = []
+        // Фильтрация сотрудников по строке поиска и категории
+        filteredEmployees = filterSearch(search: search, category: category)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd"
+        let today = Date()
+        let currentMonthDay = dateFormatter.string(from: today)
+
+        let sortedEmployees = filteredEmployees.sorted {
+            let birthday1 = String($0.birthday.dropFirst(5))
+            let birthday2 = String($1.birthday.dropFirst(5))
+            return birthday1 < birthday2
+        }
+        
+        let pastBirthdays = sortedEmployees.filter { String($0.birthday.dropFirst(5)) < currentMonthDay }
+        return pastBirthdays
+    }
+    
+    
+    
     private func filterSearch(search: String, category: String) -> [Employee] {
         
         var filteredEmployees = employees
