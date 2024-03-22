@@ -131,7 +131,6 @@
 			children = (
 				54F47EE52BA96F6600F7F30E /* Koder */,
 				54F47EE42BA96F6600F7F30E /* Products */,
-				A77403BD1EE8CAD8DEE0C1A6 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -158,13 +157,6 @@
 				54F47EF42BA96F6800F7F30E /* Info.plist */,
 			);
 			path = Koder;
-			sourceTree = "<group>";
-		};
-		A77403BD1EE8CAD8DEE0C1A6 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

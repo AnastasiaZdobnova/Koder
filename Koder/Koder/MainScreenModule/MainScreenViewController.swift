@@ -53,6 +53,13 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         return button
     }()
     
+    private let searchImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "search")
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("Отмена", for: .normal)
@@ -118,6 +125,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         view.addSubview(filterButton)
         view.addSubview(findTextField)
         view.addSubview(cancelButton)
+        view.addSubview(searchImageView)
         
         grayView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(6)
@@ -126,21 +134,27 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             make.height.equalTo(40)
         }
         
-        filterButton.snp.makeConstraints { make in
+        searchImageView.snp.makeConstraints { make in
             make.centerY.equalTo(grayView)
-            make.right.equalToSuperview().inset(30)
+            make.left.equalTo(grayView).offset(12)
+            make.height.width.equalTo(24)
         }
         
         findTextField.snp.makeConstraints { make in
             make.centerY.equalTo(grayView)
             make.height.equalTo(24)
-            make.left.equalToSuperview().offset(28)
-            make.width.equalTo(204)
+            make.left.equalTo(searchImageView.snp.right).offset(8)
+            make.width.equalTo(200)
         }
         
         cancelButton.snp.makeConstraints { make in
             make.right.equalToSuperview().inset(28)
             make.centerY.equalTo(grayView)
+        }
+        
+        filterButton.snp.makeConstraints { make in
+            make.centerY.equalTo(grayView)
+            make.right.equalToSuperview().inset(30)
         }
     }
     
@@ -209,6 +223,8 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             make.centerY.equalTo(grayView)
             make.right.equalTo(grayView).inset(13)
         }
+        
+        searchImageView.image = UIImage(named: "searchSelected")
     }
 
     @objc private func xButtonTapped() {
@@ -226,6 +242,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         cancelButton.isHidden = true
         xButton.isHidden = true
         grayViewRightConstraint?.update(inset: 16)
+        searchImageView.image = UIImage(named: "search")
     }
     
     @objc private func filterButtonTapped() {
