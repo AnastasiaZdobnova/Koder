@@ -175,7 +175,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshEmployeeData), for: .valueChanged)
         tableView.refreshControl = refreshControl
-
+        
         view.addSubview(tableView)
         
         tableView.snp.makeConstraints { make in
@@ -210,7 +210,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             make.right.equalTo(grayView).inset(13)
         }
     }
-
+    
     @objc private func xButtonTapped() {
         findTextField.text = ""
         selectSearch = ""
@@ -292,15 +292,37 @@ extension String {
 
 extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let numberOfEmployees = mainPresenter.numberOfEmployees(selectedCategory: selectedCategory, search: selectSearch)
+        var numberOfEmployees = 0
+        if selectedSort == "По алфавиту"{
+            numberOfEmployees = mainPresenter.numberOfEmployees(selectedCategory: selectedCategory, search: selectSearch)
+        }
+        else {
+            if section == 0 {
+                numberOfEmployees = mainPresenter.getUpcomingBirthdays(inCategory: selectedCategory, sort: selectedSort, search: selectSearch).count
+            }
+            else{
+                numberOfEmployees = mainPresenter.getPastBirthdays(inCategory: selectedCategory, sort: selectedSort, search: selectSearch).count
+            }
+        }
         notFindImageView.isHidden = !(numberOfEmployees == 0 && isDataLoaded)
         return numberOfEmployees
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "EmployeeTableViewCell", for: indexPath) as! EmployeeTableViewCell
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch)
-        cell.configure(with: employee)
+        
+        if selectedSort == "По алфавиту"{
+            let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch)
+            cell.configure(with: employee)
+        }
+        else{
+            let employeeGroup = indexPath.section == 0 ? mainPresenter.getUpcomingBirthdays(inCategory: selectedCategory, sort: selectedSort, search: selectSearch) : mainPresenter.getPastBirthdays(inCategory: selectedCategory, sort: selectedSort, search: selectSearch)
+            
+            let employee = employeeGroup[indexPath.row]
+            cell.configure(with: employee)
+        }
+        
         return cell
     }
     
@@ -309,8 +331,25 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch)
-        mainPresenter.showEmployeeDetailScreen(for: employee)
+        if selectedSort == "По алфавиту" {
+            let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch)
+            mainPresenter.showEmployeeDetailScreen(for: employee)
+        }
+        else{
+            let employee = indexPath.section == 0 ? mainPresenter.getUpcomingBirthdays(inCategory: selectedCategory, sort: selectedSort, search: selectSearch) : mainPresenter.getPastBirthdays(inCategory: selectedCategory, sort: selectedSort, search: selectSearch)
+            mainPresenter.showEmployeeDetailScreen(for: employee[indexPath.row])
+        }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return selectedSort == "По алфавиту" ? 1 : 2
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 1 && mainPresenter.getPastBirthdays(inCategory: selectedCategory, sort: selectedSort, search: selectSearch).count != 0 {
+            return "2025"
+        }
+        return nil
     }
 }
 
@@ -344,11 +383,11 @@ extension MainScreenViewController: SkeletonTableViewDataSource {
     func numSections(in collectionSkeletonView: UITableView) -> Int {
         return 1 // Количество секций для скелетона
     }
-
+    
     func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 10 // Примерное количество строк скелетона
     }
-
+    
     func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
         return "EmployeeTableViewCell" // Идентификатор вашей ячейки
     }
