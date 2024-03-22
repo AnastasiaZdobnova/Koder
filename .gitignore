@@ -1,2 +1,5 @@
 Koder/.DS_Store
 Koder/Koder.xcodeproj/project.xcworkspace/xcuserdata/anastasiazdobnova.xcuserdatad/UserInterfaceState.xcuserstate
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
