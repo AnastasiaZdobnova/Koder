@@ -74,7 +74,6 @@ class FilterBottomSheetViewController: UIViewController, FilterBottomSheetViewCo
 }
 extension FilterBottomSheetViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(filterBottomSheetPresenter.filterBottomSheetModel.sortOptions.count)
         return filterBottomSheetPresenter.filterBottomSheetModel.sortOptions.count
     }
     
@@ -82,7 +81,6 @@ extension FilterBottomSheetViewController: UITableViewDataSource, UITableViewDel
         let cell = tableView.dequeueReusableCell(withIdentifier: SortingOptionCell.identifier, for: indexPath) as! SortingOptionCell
         let option = filterBottomSheetPresenter.filterBottomSheetModel.sortOptions[indexPath.row]
         let isSelected = option == selectedSort
-        print("option\(option) isSelected\(isSelected)")
         cell.configure(with: option, isSelected: isSelected)
         return cell
     }
