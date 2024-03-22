@@ -321,6 +321,8 @@ protocol FilterBottomSheetDelegate: AnyObject {
 extension MainScreenViewController: FilterBottomSheetDelegate {
     func didSelectSortOption(_ sortOption: String) {
         selectedSort = sortOption
+        let image = selectedSort == "По алфавиту" ? UIImage(named: "filter") : UIImage(named: "filterSelected")
+        filterButton.setImage(image, for: .normal)
         showSkeleton()
         DispatchQueue.main.asyncAfter(deadline: .now() + self.requestDelay){
             self.tableView.reloadData()
