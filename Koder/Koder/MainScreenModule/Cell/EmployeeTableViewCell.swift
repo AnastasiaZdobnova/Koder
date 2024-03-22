@@ -67,6 +67,13 @@ class EmployeeTableViewCell: UITableViewCell {
         return label
     }()
     
+    private let ageLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        label.textColor = .darkGray
+        return label
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         isSkeletonable = true
@@ -76,6 +83,7 @@ class EmployeeTableViewCell: UITableViewCell {
         contentView.addSubview(positionLabel)
         contentView.addSubview(userTagLabel)
         contentView.addSubview(nameLabelSkeleton)
+        contentView.addSubview(ageLabel)
         setupConstraints()
     }
     
@@ -115,9 +123,14 @@ class EmployeeTableViewCell: UITableViewCell {
             make.left.equalTo(nameLabel.snp.left)
             make.width.equalTo(80)
         }
+        
+        ageLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(28)
+            make.right.equalToSuperview()
+        }
     }
     
-    public func configure(with employee: Employee?) {
+    public func configure(with employee: Employee?, sort: String) {
         if let employee = employee {
             nameLabel.text = "\(employee.firstName) \(employee.lastName)"
             positionLabel.text = employee.position
@@ -126,11 +139,9 @@ class EmployeeTableViewCell: UITableViewCell {
             if let url = URL(string: employee.avatarUrl) {
                 avatarImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "goose"))
             }
-        } else {
-            avatarImageView.image = UIImage(named: "goose")
-            nameLabel.text = nil
-            positionLabel.text = nil
-            userTagLabel.text = nil
+            if sort == "По дню рождения"{
+                ageLabel.text = formattedBirthday(date: employee.birthday)
+            }
         }
     }
     
@@ -140,6 +151,25 @@ class EmployeeTableViewCell: UITableViewCell {
         nameLabel.text = nil
         positionLabel.text = nil
         userTagLabel.text = nil
+        ageLabel.text = nil
+    }
+    
+    func formattedBirthday(date: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let monthSymbols = ["янв", "фев", "мар", "апр", "май", "июн",
+                            "июл", "авг", "сен", "окт", "ноя", "дек"]
+
+        if let birthdayDate = dateFormatter.date(from: date) {
+            let calendar = Calendar.current
+            let components = calendar.dateComponents([.day, .month], from: birthdayDate)
+            if let day = components.day, let monthIndex = components.month, monthIndex >= 1 && monthIndex <= 12 {
+                return "\(day) \(monthSymbols[monthIndex - 1])"
+            }
+        }
+        
+        return "Неизвестная дата"
     }
 }
 

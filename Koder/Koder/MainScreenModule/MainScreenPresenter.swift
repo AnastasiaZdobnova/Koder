@@ -12,9 +12,7 @@ protocol MainScreenPresenterProtocol: AnyObject {
     var mainScreenModel : MainScreenModelProtocol { get set }
     func getDepartmentNames() -> [String]
     func fetchEmployees()
-    func numberOfEmployees(selectedCategory: String, search: String) -> Int 
     func getEmployeesInCategory(atIndex index: Int, category: String, sort: String, search: String, section: Int) -> Employee
-    func getUpcomingBirthdays(inCategory category: String, sort: String, search: String) -> [Employee]
     func getPastBirthdays(inCategory category: String, sort: String, search: String) -> [Employee]
     func showEmployeeDetailScreen(for employee: Employee)
     func showFilterBottomSheet(selectedSort: String)
@@ -61,7 +59,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
         }
     }
     
-    func numberOfEmployees(selectedCategory: String, search: String) -> Int {
+    private func numberOfEmployees(selectedCategory: String, search: String) -> Int {
         return mainScreenModel.numberOfEmployees(inCategory: selectedCategory, search: search)
     }
     
@@ -75,7 +73,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
         }
     }
     
-    func getUpcomingBirthdays(inCategory category: String, sort: String, search: String) -> [Employee]{
+    private func getUpcomingBirthdays(inCategory category: String, sort: String, search: String) -> [Employee]{
         return mainScreenModel.getUpcomingBirthdays(inCategory: category, sort: sort, search: search)
     }
     

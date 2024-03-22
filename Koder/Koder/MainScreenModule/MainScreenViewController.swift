@@ -298,7 +298,7 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "EmployeeTableViewCell", for: indexPath) as! EmployeeTableViewCell
         
         let employee = mainPresenter.getEmployeesInCategory(atIndex: indexPath.row, category: selectedCategory, sort: selectedSort, search: selectSearch, section: indexPath.section)
-        cell.configure(with: employee)
+        cell.configure(with: employee, sort: selectedSort)
         
         return cell
     }
