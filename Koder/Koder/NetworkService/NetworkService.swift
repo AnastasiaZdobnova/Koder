@@ -7,7 +7,11 @@
 
 import Foundation
 
-class NetworkService {
+protocol NetworkServiceProtocol {
+    func fetchEmployees(completion: @escaping (Result<EmployeeResponse, Error>) -> Void)
+}
+
+final class NetworkService: NetworkServiceProtocol {
     private let baseUrl = URL(string: "https://stoplight.io/mocks/kode-api/trainee-test/331141861/users")!
     private var requestDelay: TimeInterval = 2
     private var preferHeaderValues: [ResponseType: String] = [

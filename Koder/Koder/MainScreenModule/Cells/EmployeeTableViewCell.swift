@@ -19,7 +19,7 @@ class EmployeeTableViewCell: UITableViewCell {
     
     private let contentWhiteView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.backgroundAppColor
         return view
     }()
     
@@ -36,6 +36,7 @@ class EmployeeTableViewCell: UITableViewCell {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = AppColors.titleTextColor
         return label
     }()
     
@@ -52,7 +53,7 @@ class EmployeeTableViewCell: UITableViewCell {
     private let positionLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .darkGray
+        label.textColor = AppColors.darkSubtitleColor
         label.isSkeletonable = true
         label.skeletonTextNumberOfLines = 1
         label.skeletonTextLineHeight = .fixed(12)
@@ -63,14 +64,14 @@ class EmployeeTableViewCell: UITableViewCell {
     private let userTagLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .lightGray
+        label.textColor = AppColors.subtitleTextColor
         return label
     }()
     
     private let ageLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-        label.textColor = .darkGray
+        label.textColor = AppColors.darkSubtitleColor
         return label
     }()
     
@@ -109,7 +110,7 @@ class EmployeeTableViewCell: UITableViewCell {
         }
         
         userTagLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(nameLabel)
+            make.firstBaseline.equalTo(nameLabel.snp.firstBaseline)
             make.left.equalTo(nameLabel.snp.right).offset(4)
         }
         

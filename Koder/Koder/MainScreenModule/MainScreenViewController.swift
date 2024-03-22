@@ -28,17 +28,25 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     
     private let grayView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemGray6 // Установка фона в серый цвет
-        view.layer.cornerRadius = 16 // Установка радиуса углов
-        view.clipsToBounds = true // Обрезка по границе радиуса углов
+        view.backgroundColor = AppColors.textFieldColor
+        view.layer.cornerRadius = 16
+        view.clipsToBounds = true
         return view
+    }()
+    
+    private let searchImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "search")
+        imageView.contentMode = .scaleAspectFit
+        return imageView
     }()
     
     private let findTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Введи имя, тег..."
+        textField.tintColor = AppColors.accentColor
         textField.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        textField.textColor = .black
+        textField.textColor = AppColors.titleTextColor
         textField.backgroundColor = .clear
         return textField
     }()
@@ -73,12 +81,10 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         return button
     }()
     
-    private let notFindImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "notFind")
-        imageView.contentMode = .scaleAspectFit
-        imageView.isHidden = true
-        return imageView
+    private let alertNotFindView: UIView = {
+        let view = NotFindIView()
+        view.isHidden = true
+        return view
     }()
     
     override func viewWillAppear(_ animated: Bool) {
@@ -89,13 +95,13 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.backgroundAppColor
         setupCollectionView()
         setupTableView()
         setupNavigationBar()
         
-        view.addSubview(notFindImageView)
-        notFindImageView.snp.makeConstraints { make in
+        view.addSubview(alertNotFindView)
+        alertNotFindView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(176)
             make.left.right.equalToSuperview().inset(16)
         }
@@ -117,6 +123,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         view.addSubview(filterButton)
         view.addSubview(findTextField)
         view.addSubview(cancelButton)
+        view.addSubview(searchImageView)
         
         grayView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(6)
@@ -125,21 +132,27 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             make.height.equalTo(40)
         }
         
-        filterButton.snp.makeConstraints { make in
+        searchImageView.snp.makeConstraints { make in
             make.centerY.equalTo(grayView)
-            make.right.equalToSuperview().inset(30)
+            make.left.equalTo(grayView).offset(12)
+            make.height.width.equalTo(24)
         }
         
         findTextField.snp.makeConstraints { make in
             make.centerY.equalTo(grayView)
             make.height.equalTo(24)
-            make.left.equalToSuperview().offset(28)
-            make.width.equalTo(204)
+            make.left.equalTo(searchImageView.snp.right).offset(8)
+            make.width.equalTo(200)
         }
         
         cancelButton.snp.makeConstraints { make in
             make.right.equalToSuperview().inset(28)
             make.centerY.equalTo(grayView)
+        }
+        
+        filterButton.snp.makeConstraints { make in
+            make.centerY.equalTo(grayView)
+            make.right.equalToSuperview().inset(30)
         }
         
         findTextField.delegate = self
@@ -211,6 +224,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             make.centerY.equalTo(grayView)
             make.right.equalTo(grayView).inset(13)
         }
+        searchImageView.image = UIImage(named: "searchSelected")
     }
     
     @objc private func xButtonTapped() {
@@ -228,6 +242,7 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         cancelButton.isHidden = true
         xButton.isHidden = true
         grayViewRightConstraint?.update(inset: 16)
+        searchImageView.image = UIImage(named: "search")
     }
     
     @objc private func filterButtonTapped() {
@@ -292,7 +307,7 @@ extension String {
 extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let numberOfEmployees = mainPresenter.numberOfRowsInSection(inCategory: selectedCategory, sort: selectedSort, search: selectSearch, section: section)
-        notFindImageView.isHidden = !(numberOfEmployees == 0 && isDataLoaded)
+        alertNotFindView.isHidden = !(numberOfEmployees == 0 && isDataLoaded)
         return numberOfEmployees
     }
     

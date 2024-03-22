@@ -30,7 +30,7 @@ final class EmployeeDetailsPresenter: EmployeeDetailsScreenPresenterProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func makeCall() { //employeeDetailsScreenModel.employee.phone
+    func makeCall() { 
         if let url = URL(string: "tel://\(employeeDetailsScreenModel.employee.phone)") {
             UIApplication.shared.open(url)
         }

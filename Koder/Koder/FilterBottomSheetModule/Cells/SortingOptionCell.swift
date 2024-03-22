@@ -21,7 +21,7 @@ class SortingOptionCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .black
+        label.textColor = AppColors.titleTextColor
         return label
     }()
     
@@ -49,7 +49,7 @@ class SortingOptionCell: UITableViewCell {
     
     func configure(with title: String, isSelected: Bool) {
         titleLabel.text = title
-        iconImageView.image = UIImage(named: isSelected ? "selected" : "unselected")
+        iconImageView.image = UIImage(named: isSelected ? "Selected" : "UnSelected")
     }
     
 }

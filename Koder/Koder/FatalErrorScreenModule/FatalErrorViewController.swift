@@ -21,7 +21,7 @@ class FatalErrorViewController: UIViewController {
         let label = UILabel()
         label.text = "Какой-то сверхразум все сломал"
         label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-        label.textColor = .black
+        label.textColor = AppColors.titleTextColor
         return label
     }()
     
@@ -29,14 +29,14 @@ class FatalErrorViewController: UIViewController {
         let label = UILabel()
         label.text = "Постараемся быстро починить"
         label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-        label.textColor = .systemGray
+        label.textColor = AppColors.subtitleTextColor
         return label
     }()
     
     private let afreshButton: UIButton = {
         let button = UIButton()
         button.setTitle("Попробовать снова", for: .normal)
-        button.setTitleColor(.purple, for: .normal)
+        button.setTitleColor(AppColors.accentColor, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         button.addTarget(self, action: #selector(afreshButtonTapped), for: .touchUpInside)
         return button
@@ -44,7 +44,7 @@ class FatalErrorViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.backgroundAppColor
         setupUI()
     }
     

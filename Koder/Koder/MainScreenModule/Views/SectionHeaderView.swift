@@ -18,9 +18,17 @@ class SectionHeaderView: UIView {
         return label
     }()
     
-    let leftLine = UIView()
+    let leftLine : UIView = {
+        let view = UIView()
+        view.backgroundColor = AppColors.headerSectionColor
+        return view
+    }()
     
-    let rightLine = UIView()
+    let rightLine : UIView = {
+        let view = UIView()
+        view.backgroundColor = AppColors.headerSectionColor
+        return view
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -32,9 +40,7 @@ class SectionHeaderView: UIView {
     }
     
     private func setupViews() {
-        leftLine.backgroundColor = .systemGray
-        rightLine.backgroundColor = .systemGray
-        
+
         addSubview(leftLine)
         addSubview(rightLine)
         addSubview(titleLabel)

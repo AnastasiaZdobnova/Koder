@@ -12,6 +12,7 @@ import SDWebImage
 
 protocol EmployeeDetailsScreenViewControllerProtocol : UIViewController {
     var employeeDetailsPresenter: EmployeeDetailsScreenPresenterProtocol { get }
+    func configureView(with employee: Employee)
 }
 
 class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenViewControllerProtocol {
@@ -22,33 +23,34 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 104/2 // Половина высоты и ширины для круглой формы\
+        imageView.layer.cornerRadius = 104/2 // Половина высоты и ширины для круглой формы
         return imageView
     }()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textColor = AppColors.titleTextColor
         return label
     }()
     
     private let positionLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .darkGray
+        label.textColor = AppColors.darkSubtitleColor
         return label
     }()
     
     private let userTagLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        label.textColor = .lightGray
+        label.textColor = AppColors.subtitleTextColor
         return label
     }()
     
     private let contentWhiteView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.backgroundAppColor
         return view
     }()
     
@@ -69,6 +71,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
     private let phoneLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = AppColors.titleTextColor
         return label
     }()
     
@@ -82,14 +85,14 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
     private let birthdayLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .black
+        label.textColor = AppColors.titleTextColor
         return label
     }()
     
     private let ageLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .lightGray
+        label.textColor = AppColors.subtitleTextColor
         return label
     }()
     
@@ -100,7 +103,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemGray6
+        view.backgroundColor = AppColors.backgroundAppColor
         configureNavigationBar()
         configureView(with: employeeDetailsPresenter.getEmployee())
         setupUI()
@@ -115,7 +118,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupUI(){
+    private func setupUI() {
         view.addSubview(avatarImageView)
         view.addSubview(nameLabel)
         view.addSubview(positionLabel)
@@ -149,7 +152,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         }
         
         userTagLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(nameLabel)
+            make.firstBaseline.equalTo(nameLabel.snp.firstBaseline)
             make.left.equalTo(nameLabel.snp.right).offset(4)
         }
         
@@ -161,7 +164,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         starIconImageView.snp.makeConstraints { make in
             make.top.equalTo(contentWhiteView).offset(28)
             make.left.equalTo(contentWhiteView).offset(18)
-            make.width.height.equalTo(20) // Установите размеры иконки по вашему желанию
+            make.width.height.equalTo(20)
         }
         
         birthdayLabel.snp.makeConstraints { make in
@@ -177,7 +180,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         phoneIconImageView.snp.makeConstraints { make in
             make.left.equalTo(starIconImageView)
             make.top.equalTo(starIconImageView.snp.bottom).offset(48)
-            make.width.height.equalTo(20) // Установите размеры иконки по вашему желанию
+            make.width.height.equalTo(20)
         }
         
         phoneLabel.snp.makeConstraints { make in
@@ -193,7 +196,7 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         
     }
     
-    public func configureView(with employee: Employee) {
+    func configureView(with employee: Employee) {
         nameLabel.text = "\(employee.firstName) \(employee.lastName)"
         positionLabel.text = employee.position
         userTagLabel.text = employee.userTag.lowercased()
@@ -207,7 +210,6 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
     }
     
     @objc private func callButtonTapped() {
-
         employeeDetailsPresenter.makeCall()
     }
     

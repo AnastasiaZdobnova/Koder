@@ -26,6 +26,7 @@ class FilterBottomSheetViewController: UIViewController, FilterBottomSheetViewCo
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         label.text = "Сортировка"
+        label.textColor = AppColors.titleTextColor
         return label
     }()
     
@@ -33,7 +34,7 @@ class FilterBottomSheetViewController: UIViewController, FilterBottomSheetViewCo
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.backgroundAppColor
         navigationController?.isNavigationBarHidden = false
         setupUI()
         setupTableView()
@@ -63,6 +64,7 @@ class FilterBottomSheetViewController: UIViewController, FilterBottomSheetViewCo
         tableView.register(SortingOptionCell.self, forCellReuseIdentifier: SortingOptionCell.identifier)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.backgroundColor = AppColors.backgroundAppColor
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
