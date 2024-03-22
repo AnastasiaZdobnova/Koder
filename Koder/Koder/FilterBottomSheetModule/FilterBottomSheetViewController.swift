@@ -7,6 +7,7 @@
 
 import Foundation
 import SnapKit
+import UIKit
 
 protocol FilterBottomSheetViewControllerProtocol : UIViewController {
     var filterBottomSheetPresenter: FilterBottomSheetPresenterProtocol { get }

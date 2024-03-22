@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SnapKit
+import SDWebImage
 
 protocol EmployeeDetailsScreenViewControllerProtocol : UIViewController {
     var employeeDetailsPresenter: EmployeeDetailsScreenPresenterProtocol { get }
@@ -201,18 +202,8 @@ class EmployeeDetailsViewController: UIViewController, EmployeeDetailsScreenView
         ageLabel.text = employeeDetailsPresenter.ageDescription()
         
         if let url = URL(string: employee.avatarUrl) {
-            loadImage(from: url)
+            avatarImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "goose"))
         }
-    }
-    
-    private func loadImage(from url: URL) {
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
-            guard let data = data, let image = UIImage(data: data) else { return }
-            DispatchQueue.main.async {
-                self?.avatarImageView.image = image
-            }
-        }
-        task.resume()
     }
     
     @objc private func callButtonTapped() {

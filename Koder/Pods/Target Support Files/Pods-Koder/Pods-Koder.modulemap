@@ -1,6 +1,0 @@
-module Pods_Koder {
-  umbrella header "Pods-Koder-umbrella.h"
-
-  export *
-  module * { export * }
-}

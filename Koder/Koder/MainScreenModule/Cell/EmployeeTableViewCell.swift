@@ -7,14 +7,15 @@
 
 import Foundation
 import SnapKit
+import UIKit
 import SkeletonView
+import SDWebImage
 
 
 class EmployeeTableViewCell: UITableViewCell {
     
     static let identifier = "EmployeeTableViewCell"
     private var nameLabelRightConstraint: Constraint?
-    private var requestDelay: TimeInterval = 1
     
     private let contentWhiteView: UIView = {
         let view = UIView()
@@ -118,30 +119,24 @@ class EmployeeTableViewCell: UITableViewCell {
     
     public func configure(with employee: Employee?) {
         if let employee = employee {
-            
             nameLabel.text = "\(employee.firstName) \(employee.lastName)"
             positionLabel.text = employee.position
             userTagLabel.text = employee.userTag.lowercased()
             
             if let url = URL(string: employee.avatarUrl) {
-                loadImage(from: url)
+                avatarImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "goose"))
             }
+        } else {
+            avatarImageView.image = UIImage(named: "goose")
+            nameLabel.text = nil
+            positionLabel.text = nil
+            userTagLabel.text = nil
         }
-    }
-    
-    private func loadImage(from url: URL) {
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
-            guard let data = data, let image = UIImage(data: data) else { return }
-            DispatchQueue.main.asyncAfter(deadline: .now() + self!.requestDelay) {
-                self?.avatarImageView.image = image
-            }
-        }
-        task.resume()
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        avatarImageView.image = UIImage(named: "goose")
+        avatarImageView.image = nil
         nameLabel.text = nil
         positionLabel.text = nil
         userTagLabel.text = nil
