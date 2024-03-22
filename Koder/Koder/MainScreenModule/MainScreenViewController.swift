@@ -93,14 +93,13 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
         setupCollectionView()
         setupTableView()
         setupNavigationBar()
-        findTextField.delegate = self
         
         view.addSubview(notFindImageView)
         notFindImageView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(176)
             make.left.right.equalToSuperview().inset(16)
         }
-        tableView.isSkeletonable = true
+        
         showSkeleton()
     }
     
@@ -142,6 +141,8 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
             make.right.equalToSuperview().inset(28)
             make.centerY.equalTo(grayView)
         }
+        
+        findTextField.delegate = self
     }
     
     private func setupCollectionView() {
@@ -166,11 +167,13 @@ class MainScreenViewController: UIViewController, MainScreenViewControllerProtoc
     
     private func setupTableView() {
         tableView = UITableView()
+        tableView.estimatedSectionHeaderHeight = 0
         tableView.register(EmployeeTableViewCell.self, forCellReuseIdentifier: "EmployeeTableViewCell")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
+        tableView.isSkeletonable = true
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshEmployeeData), for: .valueChanged)
@@ -317,11 +320,24 @@ extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
         return selectedSort == "По алфавиту" ? 1 : 2
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 1 && mainPresenter.getPastBirthdays(inCategory: selectedCategory, sort: selectedSort, search: selectSearch).count != 0 {
-            return "2025"
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if section == 1 && mainPresenter.numberOfRowsInSection(inCategory: selectedCategory, sort: selectedSort, search: selectSearch, section: section) != 0 {
+            let headerView = SectionHeaderView()
+            let currentYear = Calendar.current.component(.year, from: Date())
+            let title = "\(currentYear + 1)"
+            headerView.configure(with: title)
+            return headerView
         }
+        
         return nil
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 1 {
+            return 40 // Высота для второй секции
+        } else {
+            return 0 // Минимальное значение для секций без заголовка
+        }
     }
 }
 

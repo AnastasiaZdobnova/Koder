@@ -21,6 +21,7 @@
 		5438A89E2BAD690200C2632E /* SkeletonView in Frameworks */ = {isa = PBXBuildFile; productRef = 5438A89D2BAD690200C2632E /* SkeletonView */; };
 		5438A8A12BAD692900C2632E /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 5438A8A02BAD692900C2632E /* SDWebImage */; };
 		5438A8A32BAD692900C2632E /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5438A8A22BAD692900C2632E /* SDWebImageMapKit */; };
+		545F61102BADB56D008B5CC4 /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545F610F2BADB56D008B5CC4 /* SectionHeaderView.swift */; };
 		549EF08A2BA978B800C2B77D /* MainScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549EF0892BA978B800C2B77D /* MainScreenViewController.swift */; };
 		549EF08C2BA978D800C2B77D /* MainScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549EF08B2BA978D800C2B77D /* MainScreenModel.swift */; };
 		549EF08E2BA978E700C2B77D /* MainScreenPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549EF08D2BA978E700C2B77D /* MainScreenPresenter.swift */; };
@@ -43,6 +44,7 @@
 		542986082BAADC0F0025CE7B /* FilterBottomSheetPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBottomSheetPresenter.swift; sourceTree = "<group>"; };
 		5429860A2BAADC2D0025CE7B /* FilterBottomSheetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBottomSheetModel.swift; sourceTree = "<group>"; };
 		5429860C2BAAFE070025CE7B /* SortingOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortingOptionCell.swift; sourceTree = "<group>"; };
+		545F610F2BADB56D008B5CC4 /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
 		549EF0892BA978B800C2B77D /* MainScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewController.swift; sourceTree = "<group>"; };
 		549EF08B2BA978D800C2B77D /* MainScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenModel.swift; sourceTree = "<group>"; };
 		549EF08D2BA978E700C2B77D /* MainScreenPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenPresenter.swift; sourceTree = "<group>"; };
@@ -73,13 +75,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		542985FB2BA9D8010025CE7B /* Cell */ = {
+		542985FB2BA9D8010025CE7B /* Cells */ = {
 			isa = PBXGroup;
 			children = (
 				54D81FC32BA983AE000300D0 /* DepartmentCell.swift */,
 				542985FC2BA9D85E0025CE7B /* EmployeeTableViewCell.swift */,
 			);
-			path = Cell;
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		542986042BA9F4000025CE7B /* EmployeeDetailsScreenModule */ = {
@@ -111,10 +113,19 @@
 			path = FatalErrorScreenModule;
 			sourceTree = "<group>";
 		};
+		545F610E2BADB560008B5CC4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				545F610F2BADB56D008B5CC4 /* SectionHeaderView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		549EF0882BA9788500C2B77D /* MainScreenModule */ = {
 			isa = PBXGroup;
 			children = (
-				542985FB2BA9D8010025CE7B /* Cell */,
+				545F610E2BADB560008B5CC4 /* Views */,
+				542985FB2BA9D8010025CE7B /* Cells */,
 				549EF0892BA978B800C2B77D /* MainScreenViewController.swift */,
 				549EF08B2BA978D800C2B77D /* MainScreenModel.swift */,
 				549EF08D2BA978E700C2B77D /* MainScreenPresenter.swift */,
@@ -259,6 +270,7 @@
 				54F47EE92BA96F6600F7F30E /* SceneDelegate.swift in Sources */,
 				542986032BA9F3650025CE7B /* EmployeeDetailsScreenModel.swift in Sources */,
 				549EF08E2BA978E700C2B77D /* MainScreenPresenter.swift in Sources */,
+				545F61102BADB56D008B5CC4 /* SectionHeaderView.swift in Sources */,
 				542986062BAAD43E0025CE7B /* FilterBottomSheetViewController.swift in Sources */,
 				54D81FC62BA9C323000300D0 /* NetworkService.swift in Sources */,
 				542986092BAADC0F0025CE7B /* FilterBottomSheetPresenter.swift in Sources */,
