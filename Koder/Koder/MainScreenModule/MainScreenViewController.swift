@@ -312,14 +312,19 @@ extension String {
 extension MainScreenViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let numberOfEmployees = mainPresenter.numberOfRowsInSection(inCategory: selectedCategory, sort: selectedSort, search: selectSearch, section: section)
-        if selectedSort == "По алфавиту"{
-            alertNotFindView.isHidden = !(numberOfEmployees == 0 && isDataLoaded)
-        }
-        else {
-            let first = mainPresenter.numberOfRowsInSection(inCategory: selectedCategory, sort: selectedSort, search: selectSearch, section: 0)
-            let second = mainPresenter.numberOfRowsInSection(inCategory: selectedCategory, sort: selectedSort, search: selectSearch, section: 1)
-            if first == 0 && second == 0 {
-                alertNotFindView.isHidden = !(numberOfEmployees == 0 && isDataLoaded)
+        if isDataLoaded {
+            if selectedSort == "По алфавиту"{
+                alertNotFindView.isHidden = !(numberOfEmployees == 0)
+            }
+            else {
+                let first = mainPresenter.numberOfRowsInSection(inCategory: selectedCategory, sort: selectedSort, search: selectSearch, section: 0)
+                let second = mainPresenter.numberOfRowsInSection(inCategory: selectedCategory, sort: selectedSort, search: selectSearch, section: 1)
+                if first == 0 && second == 0 {
+                    alertNotFindView.isHidden = false
+                }
+                else{
+                    alertNotFindView.isHidden = true
+                }
             }
         }
         
